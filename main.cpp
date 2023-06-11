@@ -13,6 +13,7 @@
 #include "Objects.h"
 #include "Errors.h"
 #include "Commander.h"
+#include "GlobalVar.h"
 
 int main(int argc,char *argv[]) {
     Commander cmder;

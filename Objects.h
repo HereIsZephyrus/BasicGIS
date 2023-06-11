@@ -9,6 +9,7 @@
 #include<vector>
 using std::string;
 using std::vector;
+using std::fstream;
 namespace ColorConst {
 	constexpr char _dx = 3;
 	constexpr char _dy = 3;
@@ -19,16 +20,20 @@ namespace ColorConst {
 using namespace ColorConst;
 constexpr bool DRAWING = false;
 constexpr bool EXISTED = true;
+static string filename;
 
 
 class Commander ;
+class Display;
 class Response
 {
+	friend class Display;
 protected:
 	int X, Y, borderBold, color;
 	double alpha;
 	static unsigned int count;
 	unsigned int id;
+	virtual int _Draw() = 0;
 public:
 	Response() :X(0), Y(0), borderBold(_BOLD_), color(0), alpha(1) {
 		id = ++count;
@@ -51,10 +56,12 @@ public:
 };
 class Display
 {
+	friend class Response;
 protected:
 	int X, Y;
 	static unsigned int count;
 	unsigned int id;
+	virtual int _Draw() = 0;
 public:
 	Display(int x, int y) :X(x), Y(y) {
 		id = ++count;
@@ -77,6 +84,8 @@ public:
     int getX() const;
     int getY() const;
     int getColor() const;
+	int getSize() const;
+	void Print(const int&,const int&)
 };
 class Point :public Response
 {
@@ -90,7 +99,7 @@ private:
 protected:
 	virtual int _Delete();
 	virtual void DisplayInfo() const;
-	virtual int _Draw(const int &,const int &);
+	virtual int _Draw();
 public:
 	enum type
 	{
@@ -122,12 +131,13 @@ class Squareness :public Display
 private:
 	int width, height;
 	vector<Text> msg;
-	//image
 public:
 	Squareness(int x, int y, int w, int h) :Display(x, y), width(w), height(h),msg{} {};
 	~Squareness() {
 		msg.clear();
 	}
+	virtual int _Draw();
+	inline void AddText(Text);
 };
 
 class Polygen :public Response
@@ -163,9 +173,9 @@ private:
 	bool shownedInfo;
 protected:
 	double CalcLength();
-	int _AddPoint();
+	int _AddPoint(const MOUSEMSG&);
 	int _DeletePoint();
-	int _Bind();
+	int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
 	Line(int X, int Y, int Bold, int Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
@@ -186,15 +196,15 @@ private:
 	Text info;
 	ButtonType type;
 protected:
-	virtual int _Draw();
+	int LoadPhoto(string);
+	void SaveToFile(fstream*);
+	void LoadFromFile(fstream*);
 public:
 	Button(int X, int Y, int Bold, int Color, int w, int h) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), type{ NOEXIST_BUTTON } {};
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	int Press(Status,const MOUSEMSG&, vector<Response*>::iterator&);
+	virtual int _Draw();
 };
-
-constexpr int ButtonNum = 11;//一共有11个按钮
-
 #endif // !_OBJECTS_H_

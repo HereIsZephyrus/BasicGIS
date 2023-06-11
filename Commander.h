@@ -23,23 +23,16 @@
 #ifndef _COMMANDER_H_
 #define _COMMANDER_H_
 #include "Enums.h"
+#include "GlobalVar.h"
 #include<typeinfo>
-#include<vector>
 #include<graphics.h>
 #include<conio.h>
-#include<fstream>
 using std::vector;
 class Response;
 class Display;
 class Button;
 class Polygen;
 class Line;
-
-extern std::fstream Basic, Vec;
-extern vector<Response *> objList;
-extern vector<Display *> elmList;
-extern vector<Button *> butList;
-
 
 class Commander {
 friend class Button;
@@ -53,6 +46,8 @@ protected:
     void UpdateStage(const MOUSEMSG&);
     vector<Response *>::iterator FocusObjID(const MOUSEMSG &);
     void TOclick(vector<Response*>::iterator,const MOUSEMSG &,bool);
+    int onMenuMsg(const MOUSEMSG &);
+    int onDrawMsg(const MOUSEMSG &);
 public:
 	Commander() :mouse{}, stage{ Hold }{
         FlushMouseMsgBuffer();
@@ -61,7 +56,7 @@ public:
 	int getCommand();
 };
 
-double Distance(const int &, const int &, const int &, const int &);
+inline double Distance(const int &, const int &, const int &, const int &);
 int CalcLine(const int,const int, Polygen*);
 bool CheckEdges(const int, const int, Line*);
 bool CheckExceed(const Response*,bool );

@@ -21,13 +21,9 @@
 #pragma once
 #include<graphics.h>
 #include<conio.h>
-#include<fstream>
-#include<iostream>
 
 #ifndef _SOLUTION_H_
 #define _SOLUTION_H_
-extern std::fstream Basic;
-extern std::fstream Vec;
 class Commander;
 void Initialize(const Commander&);
 void ShutDown(const Commander&);
