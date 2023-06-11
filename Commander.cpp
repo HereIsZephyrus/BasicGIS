@@ -178,7 +178,7 @@ double Distance(const int& x1, const int& y1, const int& x2, const int& y2)
 }
 int CalcLine(const int x, const int y, Polygen* obj)
 {
-    return 0;   
+    return 0;
 }
 bool CheckEdges(const int x, const int y, Line* obj)
 {

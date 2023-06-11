@@ -66,6 +66,7 @@ void Squareness::_Draw()
         (*it)->Print(x,y);
         y = y + (*it)->getSize()+_dy;
     }
+    //@@@@@@@@@@@@@@@HereIsZephyrus绘制边框
     return;
 }
 
@@ -84,15 +85,39 @@ int Point::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
     if (Status == EXISTED) //显示文本框确认
     {
-        /*
+
         HWND hnd = GetHWnd();
         SetWindowText(hnd, "警告！");
         int isDelete = MessageBox("您确定要删除该点吗");
         if (isDelete == IDCANCEL)
             return 0;
-        */
     }
-    _Delete();
+    switch (type)
+    {
+        case POINT:
+        {
+        _Delete();
+        break;
+        }
+        case LINE:
+        {
+        Line* Fa=FindLine(father);
+        *Fa._DeletePoint(id);
+        break;
+        }
+        case POLYGEN:
+        {
+        Polygen* Fa=FindPolygen(father);
+        *Fa._DeletePoint(id);
+        break;
+        }
+        default:
+        {
+        //failed
+        break;
+        }
+    }
+
     return 0;
 }
 int Point::Suspend()
@@ -102,13 +127,21 @@ int Point::Suspend()
 }
 int Point::_Draw()
 {
+    if (drawed)//failed
+        return 1;
+    drawed = true;
     color = 1;  size = _SIZE_;
     fillcircle(X,Y,size);
+    //@@@@@@@@@@@HereIsZephyrus画图
     return 0;
 }
 int Point::_Delete()
 {
-
+    if (!drawed)//failed
+        return 1;
+    drawed = false;
+    color = 0;  size = _SIZE_;
+    //@@@@@@@@@@@@@HereIsZephyrus擦掉图像
     return 0;
 }
 void Point::DisplayInfo() const
@@ -120,14 +153,30 @@ void Point::DisplayInfo() const
         Msg.AddText(Text());
         Msg.AddText(Text());
     }
-    Msg._Draw();
+    if (!drawed) Msg._Draw();
+    else            Msg._Delete();
     return;
 }
 
 int Borden::_Draw()
 {
-
+    if (drawed)//failed
+        return 1;
+    drawed = true;
+    //@@@@@@@@@@@@@HereIsZephyrus画图
     return 0;
+}
+int Borden::_Delete()
+{
+    if (!drawed)//failed
+        return 1;
+    drawed = false;
+    //@@@@@@@@@@@@@HereIsZephyrus擦掉图像
+    return 0;
+}
+void Button::DisplayInfo() const{
+    //右键显示个guide信息
+    return;
 }
 
 int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
@@ -142,6 +191,17 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 }
 int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
+    if (Status == EXISTED) // 显示文本框确认
+    {
+
+        HWND hnd = GetHWnd();
+        SetWindowText(hnd, "警告！");
+        int isDelete = MessageBox("您确定要删除该面吗");
+        if (isDelete == IDCANCEL)
+            return 0;
+        _Delete();
+    }
+    //在绘制过程中是不可以一下子删除一整个面对象的，所以这里不用管，在Drawing时点到点上会自己删除，边是Display对象不用管
     return 0;
 }
 int Polygen::Suspend()
@@ -172,8 +232,44 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
     }
     return 0;
 }
-int Polygen::_DeletePoint()
+int Polygen::_DeletePoint(const unsigned int& id)
 {
+    //从队列中删除一个点，然后重新绑定边
+    vector<Point>::iterator p = points.begin();
+    vector<Borden>::iterator b;
+    if ((*p).getID() == id)
+    {
+        b=borders.begin();
+        _Erase(b);
+        b=borders.end()-1;
+        _Erase(b);
+        points.erase(p);
+        _Bind(points.begin(), points.end() - 1);
+        return 0;
+    }
+    p = points.end()-1;
+    if ((*p).getID() == id)
+    {
+        b = borders.end() - 1;
+        _Erase(b);
+        b = borders.end()-2;//一个矩形一定起码有三条边的！不会越界
+        _Erase(b);
+        points.erase(p);
+        _Bind(points.begin(), points.end() - 1);
+        return 0;
+    }
+    for (p = points.begin()+1,b=borders.begin()+1; p != points.end(); ++p,++b)
+    {
+        if (b==borders.end())//failed
+            return 1;
+        if ((*p).getID() == id)
+        {
+            _Erase(b);_Erase(b-1);
+            _Bind(p-1, p+1);//这里不会越界，因为上面的if已经判断过了（挺妙的）
+            points.erase(p);
+            break;
+        }
+    }
     return 0;
 }
 int Polygen::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
@@ -182,9 +278,16 @@ int Polygen::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
     borders.push_back(Borden(x1, y1, x2, y2));
     return 0;
 }
+int Polygen::_Erase(vector<Borden>::iterator b)
+{
+    //这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
+    //！！！记得擦掉图像
+    borders.erase(b);
+    return 0;
+}
 int Polygen::_Draw()
 {
-    
+    //@@@@@@@@@@HereIsZephyrus画出图像
     return 0;
 }
 void Polygen::DisplayInfo() const
@@ -211,6 +314,17 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 }
 int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
+    if (Status == EXISTED) // 显示文本框确认
+    {
+
+        HWND hnd = GetHWnd();
+        SetWindowText(hnd, "警告！");
+        int isDelete = MessageBox("您确定要删除该线吗");
+        if (isDelete == IDCANCEL)
+            return 0;
+        _Delete();
+    }
+    // 在绘制过程中是不可以一下子删除一整个线对象的，所以这里不用管，在Drawing时点到点和边上会自己删除
     return 0;
 }
 int Line::Suspend()
@@ -228,6 +342,76 @@ void Line::DisplayInfo() const
         Msg.AddText(Text());
     }
     Msg._Draw();
+    return;
+}
+void Line::_AddPoint(const MOUSEMSG& mouse)
+{
+    vector<Point>::iterator p = points.begin();
+    const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
+    if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < _SIZE_)
+        _Bind(points.begin(), points.end() - 1);
+    else
+    {
+        points.push_back(Point(x1, x2, _BOLD_, color, alpha));
+        _Bind(points.end() - 1, points.end() - 2);
+    }
+    return;
+}
+int Line::_DeletePoint(const unsigned int& id )
+{
+    // 从队列中删除一个点，然后重新绑定边
+    vector<Point>::iterator p = points.begin();
+    vector<Borden>::iterator b;
+    if ((*p).getID() == id)
+    {
+        b = borders.begin();
+        _Erase(b);
+        points.erase(p);
+        return 0;
+    }
+    p = points.end() - 1;
+    if ((*p).getID() == id)
+    {
+        b = borders.end() - 1;
+        _Erase(b);
+        points.erase(p);
+        return 0;
+    }
+    for (p = points.begin() + 1, b = borders.begin() + 1; p != points.end(); ++p, ++b)
+    {
+        if (b == borders.end()) // failed
+            return 1;
+        if ((*p).getID() == id)
+        {
+            _Erase(b);
+            _Bind(p - 1, p + 1); // 这里不会越界，因为上面的if已经判断过了（挺妙的）
+            points.erase(p);
+            break;
+        }
+    }
+    return 0;
+}
+int Line::_Draw()
+{
+    //@@@@@@@@@@HereIsZephyrus画出图像
+    return 0;
+}
+int Line::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
+{
+    const int x1 = (*p1).getX(), y1 = (*p1).getY(), x2 = (*p2).getX(), y2 = (*p2).getY();
+    borders.push_back(Borden(x1, y1, x2, y2));
+    return 0;
+}
+int Line::_Erase(vector<Borden>::iterator b)
+{
+    //这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
+    //！！！记得擦掉图像
+    borders.erase(b);
+    return 0;
+}
+void Line::_Delete()
+{
+    //@@@@@@@@@@HereIsZephyrus擦掉图像
     return;
 }
 

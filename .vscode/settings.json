@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "xlocale": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "xmemory": "cpp"
+    }
+}

@@ -32,14 +32,17 @@ protected:
 	int X, Y, borderBold, color;
 	double alpha;
 	static unsigned int count;
+    bool drawed;
 	unsigned int id;
 	virtual int _Draw() = 0;
+    virtual int _Delete() = 0;
 public:
 	Response() :X(0), Y(0), borderBold(_BOLD_), color(0), alpha(1) {
 		id = ++count;
 	}
 	Response(int x, int y, int Bold, int Color, double Alpha) :X(x), Y(y), borderBold(Bold), color(Color), alpha(Alpha) {
 		id=++count;
+        drawed=false;
 	}
 	~Response() {
 		--count;
@@ -62,6 +65,7 @@ protected:
 	static unsigned int count;
 	unsigned int id;
 	virtual int _Draw() = 0;
+    virtual int _Delete() = 0;
 public:
 	Display(int x, int y) :X(x), Y(y) {
 		id = ++count;
@@ -89,24 +93,27 @@ public:
 };
 class Point :public Response
 {
+public:
+    enum PointType{
+        POINT,
+        LINE,
+        POLYGEN,
+        MAX_OBJECT
+    };
 private:
 	int size;
 	Text info;
-	enum shape
-	{
-
-	};
+    PointType type;
 protected:
 	virtual int _Delete();
 	virtual void DisplayInfo() const;
 	virtual int _Draw();
+    virtual int _Delete();
+    unsigned int father;//派生类可以修改father！这符合father的含义！
 public:
-	enum type
-	{
-
-	};
-	Point(int X, int Y, int Bold, int Color, double Alpha, int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), size(Size) {}
-	int getSize() const;
+	Point(int X, int Y, int Bold, int Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), type(Type),size(Size) {father=id;}
+    ~Point() { _Delete(); }
+    int getSize() const;
 	int getType() const;
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
@@ -118,8 +125,10 @@ private:
 	int termX, termY, bold;
 protected:
 	virtual int _Draw();
+    virtual int _Delete();
 public:
 	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY),termX(tX),termY(tY),bold(Bold){}
+    ~Borden() { _Delete(); }
 	int getTermX() const;
 	int getTermY() const;
 	int getBold() const;
@@ -135,13 +144,16 @@ public:
 	Squareness(int x, int y, int w, int h) :Display(x, y), width(w), height(h),msg{} {};
 	~Squareness() {
 		msg.clear();
-	}
+        _Delete();
+    }
 	virtual int _Draw();
+    virtual int _Delete();
 	inline void AddText(Text);
 };
 
 class Polygen :public Response
 {
+friend class Point;
 private:
 	vector<Point> points;
 	vector<Borden> borders;
@@ -149,23 +161,27 @@ private:
 	bool shownedInfo;
 protected:
 	double CalcArea();
-	int _AddPoint();
-	int _DeletePoint();
-	int _Bind();
-	virtual int _Draw();
-	virtual void DisplayInfo() const;
+    int _AddPoint(const MOUSEMSG &);
+    int _DeletePoint(const unsigned int &);
+    int _Erase(vector<Borden>::iterator);
+    int _Bind(vector<Point>::iterator, vector<Point>::iterator);
+    virtual int _Draw();
+    virtual int _Delete();
+    virtual void DisplayInfo() const;
 public:
 	Polygen(int X, int Y, int Bold, int Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
 	~Polygen() {
 		points.clear();
 		borders.clear();
-	}
+        _Delete();
+    }
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 };
 class Line :public Response
 {
+friend class Point;
 private:
 	vector<Point> points;
 	vector<Borden> borders;
@@ -174,14 +190,18 @@ private:
 protected:
 	double CalcLength();
 	int _AddPoint(const MOUSEMSG&);
-	int _DeletePoint();
-	int _Bind(vector<Point>::iterator, vector<Point>::iterator);
+	int _DeletePoint(const unsigned int&);
+    virtual int _Draw();
+    virtual int _Delete();
+    int _Erase(vector<Borden>::iterator);
+    int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
 	Line(int X, int Y, int Bold, int Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
 	~Line() {
 		points.clear();
 		borders.clear();
+        _Delete();
 	}
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
@@ -206,5 +226,7 @@ public:
     virtual int Suspend();
 	int Press(Status,const MOUSEMSG&, vector<Response*>::iterator&);
 	virtual int _Draw();
+    virtual int _Delete();
+    virtual void DisplayInfo() const;
 };
 #endif // !_OBJECTS_H_
