@@ -29,18 +29,18 @@ class Response
 {
 	friend class Display;
 protected:
-	int X, Y, borderBold;
+	int X, Y;
 	COLORREF color;
 	double alpha;
     bool drawed;
 	unsigned int id;
 	static unsigned int count;
 public:
-	Response() :X(0), Y(0), borderBold(_BOLD_), color(WHITE), alpha(1) {
+	Response() :X(0), Y(0), color(WHITE), alpha(1) {
 		id = ++count;
 		drawed = false;
 	}
-	Response(int x, int y, int Bold, COLORREF Color, double Alpha) :X(x), Y(y), borderBold(Bold), color(Color), alpha(Alpha) {
+	Response(int x, int y, COLORREF Color, double Alpha) :X(x), Y(y), color(Color), alpha(Alpha) {
 		id=++count;
         drawed=false;
 	}
@@ -108,7 +108,8 @@ protected:
 	virtual void DisplayInfo() const;
     unsigned int father;//派生类可以修改father！这符合father的含义！
 public:
-	Point(int X, int Y, int Bold, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), type(Type),size(Size) {father=id;}
+    Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
+    Point(int X, int Y, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Color, Alpha), type(Type),size(Size) {father=id;}
     ~Point() { _Delete(); }
     int getSize() const;
 	PointType getType() const;
@@ -168,7 +169,8 @@ protected:
     virtual int _Delete();
     virtual void DisplayInfo() const;
 public:
-	Polygen(int X, int Y, int Bold, COLORREF Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
+    Polygen() : Response(), points{}, borders{}, area(0), shownedInfo(false) {}
+	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
 	~Polygen() {
 		points.clear();
 		borders.clear();
@@ -197,7 +199,8 @@ protected:
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
-	Line(int X, int Y, int Bold, COLORREF Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
+    Line() : Response(), points{}, borders{}, length(0), shownedInfo(false) {}
+	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
 	~Line() {
 		points.clear();
 		borders.clear();
@@ -221,7 +224,7 @@ protected:
 	void SaveToFile(fstream&);
 	void LoadFromFile(fstream&);
 public:
-	Button(int X, int Y, int Bold, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), btype{ b } {};
+	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color, ALPHA), width(w), height(h), btype{ b } {};
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
@@ -229,8 +232,10 @@ public:
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;
+	void Addinfo(string);
 };
 
 Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
+bool CastWarning(const char*);
 #endif // !_OBJECTS_H_

@@ -35,6 +35,8 @@
 #include "Enums.h"
 #include<typeinfo>
 #include<graphics.h>
+#include<fstream>
+#include<iostream>
 #include<conio.h>
 #include<vector>
 using std::vector;

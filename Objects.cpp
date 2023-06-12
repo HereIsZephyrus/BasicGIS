@@ -22,6 +22,8 @@
 #include "GlobalVar.h"
 #include <fstream>
 #include <iostream>
+#include<graphics.h>
+#include<conio.h>
 
 vector<Point*> objList;
 vector<Squareness*> elmList;
@@ -35,6 +37,8 @@ double Response::getColor() const     {return color;}
 double Response::getAlpha() const { return alpha; }
 void Response::Move(const int& dx, const int& dy)
 {
+    X = X + dx;
+    Y = Y + dy;
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return;
 }
@@ -74,6 +78,7 @@ void Squareness::AddText(Text texts)
 int Squareness::_Draw()
 {
 	int x = X,y=Y;
+	fillrectangle(X,Y,X+width,Y+height);
 	for (vector<Text>::iterator it = msg.begin(); it != msg.end(); ++it)
 	{
 		(*it).Print(x,y);
@@ -101,15 +106,8 @@ int Point::ClickLeft(bool Status, const MOUSEMSG& mouse)
 }
 int Point::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
-	if (Status == EXISTED) //显示文本框确认
-	{
-
-		HWND hnd = GetHWnd();
-		//SetWindowText(hnd, "警告！");
-		//int isDelete = MessageBox("您确定要删除该点吗");
-		//if (isDelete == IDCANCEL)
-		//    return 0;
-	}
+	if (Status == EXISTED && CastWarning("您确定要删除该点吗?") == true) //显示文本框确认（利用短路特性）
+		return 0;
 	switch (type)
 	{
 	case PointType::POINT:
@@ -217,16 +215,9 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 }
 int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
-	if (Status == EXISTED) // 显示文本框确认
-	{
-
-		HWND hnd = GetHWnd();
-		//SetWindowText(hnd, "警告！");
-		//int isDelete = MessageBox("您确定要删除该面吗");
-		//if (isDelete == IDCANCEL)
-		//    return 0;
-		_Delete();
-	}
+	if (Status == EXISTED && CastWarning("您确定要删除该多边形吗?") == true) //显示文本框确认（利用短路特性）
+		return 0;
+	_Delete();
 	//在绘制过程中是不可以一下子删除一整个面对象的，所以这里不用管，在Drawing时点到点上会自己删除，边是Display对象不用管
 	return 0;
 }
@@ -252,10 +243,10 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	vector<Point>::iterator p = points.begin();
 	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
 	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))<_SIZE_)
-		_Bind(points.begin(), points.end() - 1);
+		_Bind(points.begin(), points.end() - 1);//手动封闭了
 	else
 	{
-		points.push_back(Point(x1,x2,_BOLD_,color,alpha, PointType::POLYGEN));
+		points.push_back(Point(x1,x2,color,alpha, PointType::POLYGEN));
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -316,6 +307,7 @@ int Polygen::_Erase(vector<Borden>::iterator b)
 int Polygen::_Draw()
 {
 	//@@@@@@@@@@HereIsZephyrus画出图像
+	//如果最后一个点不是收尾相连，那么连上
 	return 0;
 }
 int Polygen::_Delete()
@@ -353,18 +345,9 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 }
 int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
-	if (Status == EXISTED) // 显示文本框确认
-	{
-
-		HWND hnd = GetHWnd();
-		/*
-		SetWindowText(hnd, "警告！");
-		int isDelete = MessageBox("您确定要删除该线吗");
-		if (isDelete == IDCANCEL)
-			return 0;
-			*/
-		_Delete();
-	}
+	if (Status == EXISTED && CastWarning("您确定要删除该线吗?") == true) //显示文本框确认（利用短路特性）
+		return 0;
+	_Delete();
 	// 在绘制过程中是不可以一下子删除一整个线对象的，所以这里不用管，在Drawing时点到点和边上会自己删除
 	return 0;
 }
@@ -407,7 +390,7 @@ int Line::_AddPoint(const MOUSEMSG& mouse)
 		_Bind(points.begin(), points.end() - 1);
 	else
 	{
-		points.push_back(Point(x1, x2, _BOLD_, color, alpha, PointType::POLYGEN));
+		points.push_back(Point(x1, x2, color, alpha, PointType::POLYGEN));
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -537,7 +520,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 	{
 		stage = Drawing;
 		const int x = mouse.x;
-		//objList.push_back(new Point());
+		objList.push_back(new Point());
 		obj = objList.end() - 1;
 		break;
 	}
@@ -545,7 +528,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 	{
 		stage = Drawing;
 		const int x = mouse.x;
-		//objList.push_back(new Line());
+		objList.push_back(dynamic_cast<Point*>(new Line()));
 		obj = objList.end() - 1;
 		break;
 	}
@@ -553,7 +536,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 	{
 		stage = Drawing;
 		const int x = mouse.x;
-		//objList.push_back(new Polygen());
+		objList.push_back(dynamic_cast<Point*>(new Polygen()));
 		obj = objList.end() - 1;
 		break;
 	}
@@ -583,7 +566,7 @@ void Button::SaveToFile(fstream& fp)
 {
 	if (!fp.is_open())
 	{
-		//MessageBox(NULL, "Open File Failed.", "ERROR...", MB_ICONERROR);
+		MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
 		return;
 	}
    // fp << butList << elmList << objList;
@@ -593,7 +576,7 @@ void Button::LoadFromFile(fstream& fp)
 {
 	if (!fp.is_open())
 	{
-		//MessageBox(NULL, "Open File Failed.", "ERROR...", MB_ICONERROR);
+		MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
 		return;
 	}
 	objList.clear();
@@ -606,6 +589,11 @@ void Button::LoadFromFile(fstream& fp)
 		(*it)->_Draw();
 	for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
 		(*it)->_Draw();
+	return;
+}
+void Button::Addinfo(std::string msg)
+{
+	info = Text(X + (width - _FONT * 4) / 2, Y + (height - _FONT) / 2, msg, _FONT, BLACK);
 	return;
 }
 
@@ -630,4 +618,21 @@ Polygen* FindPolygen(int ID)
 	}
 	//failed
 	return dynamic_cast<Polygen*>(*objList.end());
+}
+
+bool CastWarning(const char* msg)
+{
+	HWND hnd = GetHWnd();
+	int len = MultiByteToWideChar(CP_ACP, 0, msg, -1, NULL, 0);
+	wchar_t* wmsg = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, msg, -1, wmsg, len);
+	const char* head = "警告！";
+	len = MultiByteToWideChar(CP_ACP, 0, head, -1, NULL, 0);
+	wchar_t* whead = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, head, -1, whead, len);
+	int isDelete = MessageBox(hnd,wmsg, whead, MB_OKCANCEL);
+	delete[] wmsg; delete[] whead;
+	if (isDelete == IDCANCEL)
+		return true;
+	return false;
 }

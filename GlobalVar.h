@@ -18,6 +18,9 @@ constexpr unsigned int _HButton = 30;
 constexpr unsigned int _UButton = 35; // 按钮的上方开始坐标
 constexpr unsigned int _GButton = 15; // 按钮上下排列间隔
 constexpr unsigned int _WMSG = 50;
+constexpr unsigned int _Ellipse=2;
+constexpr unsigned int _FONT = 14;
+constexpr COLORREF(eColor) = RGB(250, 250, 250);
 class Point;
 class Button;
 class Squareness;

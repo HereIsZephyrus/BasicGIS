@@ -27,8 +27,8 @@ int Commander::getCommand()
 {
 	if (MouseHit()) {
 		mouse = GetMouseMsg();
-        //if (illegalClick(mouse))
-        //    return 0;
+        if (illegalClick(mouse))
+            return 0;
 		switch (static_cast<int>(DictateArea(mouse)))
 		{
 		case static_cast<int>(Toolbar) : {//理论上在工具栏中可操作对象是按钮为充分必要的
