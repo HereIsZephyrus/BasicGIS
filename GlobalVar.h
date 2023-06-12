@@ -18,26 +18,11 @@ constexpr unsigned int _HButton = 30;
 constexpr unsigned int _UButton = 35; // 按钮的上方开始坐标
 constexpr unsigned int _GButton = 15; // 按钮上下排列间隔
 constexpr unsigned int _WMSG = 50;
-class Response;
-class Display;
-class Button;
+class Point;
 class Button;
 class Squareness;
-vector<Response *> objList;
-vector<Display *> elmList;
-vector<Button *> butList;
-
-Squareness map();
-Squareness toolbar();
-Button exitButton();         // 退出按钮
-Button drawButton1();        // 画点按钮
-Button drawButton2();        // 画线按钮
-Button drawButton3();        // 画面按钮
-Button openButton();         // 打开vec按钮
-Button newButton();          // 新建vec按钮
-Button saveButton();         // 保存vec按钮
-Button loadButton();         // 加载底图按钮
-Button switchButton();       // 转换模式按钮
-constexpr int ButtonNum = 9; // 一共有9个按钮
+extern vector<Point *> objList;
+extern vector<Squareness *> elmList;
+extern vector<Button *> butList;
 
 #endif // !_GLOBAL_H_

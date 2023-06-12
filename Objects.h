@@ -29,18 +29,18 @@ class Response
 {
 	friend class Display;
 protected:
-	int X, Y, borderBold, color;
+	int X, Y, borderBold;
+	COLORREF color;
 	double alpha;
-	static unsigned int count;
     bool drawed;
 	unsigned int id;
-
+	static unsigned int count;
 public:
-	Response() :X(0), Y(0), borderBold(_BOLD_), color(0), alpha(1) {
+	Response() :X(0), Y(0), borderBold(_BOLD_), color(WHITE), alpha(1) {
 		id = ++count;
 		drawed = false;
 	}
-	Response(int x, int y, int Bold, int Color, double Alpha) :X(x), Y(y), borderBold(Bold), color(Color), alpha(Alpha) {
+	Response(int x, int y, int Bold, COLORREF Color, double Alpha) :X(x), Y(y), borderBold(Bold), color(Color), alpha(Alpha) {
 		id=++count;
         drawed=false;
 	}
@@ -64,11 +64,12 @@ class Display
 	friend class Response;
 protected:
 	int X, Y;
-	static unsigned int count;
 	unsigned int id;
 	bool drawed;
+	COLORREF color;
+	static unsigned int count;
 public:
-	Display(int x, int y) :X(x), Y(y) {
+	Display(int x, int y, COLORREF Color=WHITE) :X(x), Y(y),color(Color) {
 		id = ++count;
 		drawed = false;
 	}
@@ -84,14 +85,15 @@ public:
 
 class Text {
 protected:
-	int X, Y, color, size;
+	int X, Y,  size;
+	COLORREF color;
 	string contain;
 public:
 	Text(): X(1),Y(1),color(BLACK),size(10){}
-	Text(int x, int y, int colour, int font,string Contain) :X(x), Y(y), color(colour), size(font),contain(Contain) {}
+	Text(int x, int y, string Contain,int font=10, COLORREF colour=BLACK) :X(x), Y(y),contain(Contain), size(font),color(colour) {}
     int getX() const;
     int getY() const;
-    int getColor() const;
+	COLORREF  getColor() const;
 	int getSize() const;
 	void Print(const int&, const int&);
 };
@@ -104,16 +106,16 @@ private:
 protected:
 	virtual int _Delete();
 	virtual void DisplayInfo() const;
-	virtual int _Draw();
     unsigned int father;//派生类可以修改father！这符合father的含义！
 public:
-	Point(int X, int Y, int Bold, int Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), type(Type),size(Size) {father=id;}
+	Point(int X, int Y, int Bold, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), type(Type),size(Size) {father=id;}
     ~Point() { _Delete(); }
     int getSize() const;
 	PointType getType() const;
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+	virtual int _Draw();
 };
 class Borden :public Display
 {
@@ -123,7 +125,7 @@ protected:
 	virtual int _Draw();
     virtual int _Delete();
 public:
-	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY),termX(tX),termY(tY),bold(Bold){}
+	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY,BLACK),termX(tX),termY(tY),bold(Bold){}
     ~Borden() { _Delete(); }
 	int getTermX() const;
 	int getTermY() const;
@@ -138,7 +140,7 @@ private:
 	int width, height;
 	vector<Text> msg;
 public:
-	Squareness(int x, int y, int w, int h) :Display(x, y), width(w), height(h),msg{} {};
+	Squareness(int x, int y, int w, int h, COLORREF color=WHITE) :Display(x, y,color), width(w), height(h),msg{} {};
 	~Squareness() {
 		msg.clear();
         _Delete();
@@ -166,7 +168,7 @@ protected:
     virtual int _Delete();
     virtual void DisplayInfo() const;
 public:
-	Polygen(int X, int Y, int Bold, int Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
+	Polygen(int X, int Y, int Bold, COLORREF Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
 	~Polygen() {
 		points.clear();
 		borders.clear();
@@ -195,7 +197,7 @@ protected:
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
-	Line(int X, int Y, int Bold, int Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
+	Line(int X, int Y, int Bold, COLORREF Color) :Response(X, Y, Bold, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
 	~Line() {
 		points.clear();
 		borders.clear();
@@ -219,11 +221,11 @@ protected:
 	void SaveToFile(fstream&);
 	void LoadFromFile(fstream&);
 public:
-	Button(int X, int Y, int Bold, int Color, int w, int h) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), btype{ NOEXIST_BUTTON } {};
+	Button(int X, int Y, int Bold, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), btype{ b } {};
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
-	int Press(Status,const MOUSEMSG&, vector<Response*>::iterator&);
+	int Press(Status,const MOUSEMSG&, vector<Point*>::iterator&);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;

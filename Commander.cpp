@@ -64,7 +64,7 @@ Areas Commander::DictateArea(const MOUSEMSG& mouse)
 	}
 	return OUT_OF_RANGE;
 }
-vector<Response*>::iterator Commander::DictateButton(const MOUSEMSG &mouse)
+vector<Point*>::iterator Commander::DictateButton(const MOUSEMSG &mouse)
 {
     int x = mouse.x,y = mouse.y;
     if (x<_LButton || x>_LButton+_WButton)//所有的鼠标都是对齐的，
@@ -73,26 +73,29 @@ vector<Response*>::iterator Commander::DictateButton(const MOUSEMSG &mouse)
         //加载底图
         return objList.begin();
     if (y >= _UButton + (_HButton + _GButton) && y <= _UButton + _HButton + (_HButton + _GButton))
-        //加载矢量
+        //新建矢量
         return objList.begin() + 1;
-    if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton) * 2)
-        //保存矢量
+    if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton))
+        //加载矢量
         return objList.begin() + 2;
     if (y >= _UButton + (_HButton + _GButton) * 3 && y <= _UButton + _HButton + (_HButton + _GButton) * 3)
-        //画点
+        //保存矢量
         return objList.begin() + 3;
     if (y >= _UButton + (_HButton + _GButton) * 4 && y <= _UButton + _HButton + (_HButton + _GButton) * 4)
-        //画多边形
+        //画点
         return objList.begin() + 4;
     if (y >= _UButton + (_HButton + _GButton) * 5 && y <= _UButton + _HButton + (_HButton + _GButton) * 5)
         //画线
         return objList.begin() + 5;
     if (y >= _UButton + (_HButton + _GButton) * 6 && y <= _UButton + _HButton + (_HButton + _GButton) * 6)
-        //转换模式
+        //画多边形
         return objList.begin() + 6;
     if (y >= _UButton + (_HButton + _GButton) * 7 && y <= _UButton + _HButton + (_HButton + _GButton) * 7)
-        //退出
+        //转换模式
         return objList.begin() + 7;
+    if (y >= _UButton + (_HButton + _GButton) * 8 && y <= _UButton + _HButton + (_HButton + _GButton) * 8)
+        //退出
+        return objList.begin() + 8;
     return objList.end();
 }
 
@@ -131,7 +134,7 @@ void Commander::UpdateStage(const MOUSEMSG &mouse)
     return;
 }
 
-void Commander::TOclick(vector<Response*>::iterator obj,const MOUSEMSG& mouse,bool STATUS)
+void Commander::TOclick(vector<Point*>::iterator obj,const MOUSEMSG& mouse,bool STATUS)
 {
     switch (mouse.uMsg)
     {
@@ -151,10 +154,10 @@ void Commander::TOclick(vector<Response*>::iterator obj,const MOUSEMSG& mouse,bo
     return;
 }
 
-vector<Response *>::iterator Commander::FocusObjID(const MOUSEMSG &mouse)
+vector<Point*>::iterator Commander::FocusObjID(const MOUSEMSG &mouse)
 {
     const int x = mouse.x, y = mouse.y;
-    for (vector<Response *>::iterator it = objList.begin(); it != objList.end(); it++)
+    for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); it++)
     {
         if (typeid(*it) == typeid(Point)) // 指到点的范围内就可以，注意Point的X和Y是中心点
             if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
@@ -242,7 +245,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
     }
     case Hold: // 空载状态，可能将更新已有矢量状态
     {
-        vector<Response*>::iterator obj = FocusObjID(mouse);
+        vector<Point*>::iterator obj = FocusObjID(mouse);
         if (obj == objList.end())
             break;
         (*obj)->Suspend();//被focus的高亮显示
@@ -251,7 +254,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
     }
     case Drag:
     {
-        vector<Response*>::iterator obj = FocusObjID(mouse);
+        vector<Point*>::iterator obj = FocusObjID(mouse);
         if (obj == objList.end())
             break;
         (*obj)->Suspend();//被focus的高亮显示

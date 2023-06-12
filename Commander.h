@@ -40,6 +40,8 @@
 using std::vector;
 class Response;
 class Display;
+class Point;
+class Squareness;
 class Button;
 class Polygen;
 class Line;
@@ -49,24 +51,24 @@ friend class Button;
 private:
 	MOUSEMSG mouse;
 	Status stage;
-	vector<Response*>::iterator obj;//指向当前响应对象的指针
+	vector<Point*>::iterator obj;//指向当前响应对象的指针
 protected:
 	Areas DictateArea(const MOUSEMSG&);
-    vector<Response*>::iterator DictateButton(const MOUSEMSG&);
-    void UpdateStage(const MOUSEMSG&);
-    vector<Response *>::iterator FocusObjID(const MOUSEMSG &);
-    void TOclick(vector<Response*>::iterator,const MOUSEMSG &,bool);
-    int onMenuMsg(const MOUSEMSG &);
-    int onDrawMsg(const MOUSEMSG &);
+	vector<Point*>::iterator DictateButton(const MOUSEMSG&);
+	void UpdateStage(const MOUSEMSG&);
+	vector<Point*>::iterator FocusObjID(const MOUSEMSG &);
+	void TOclick(vector<Point*>::iterator,const MOUSEMSG &,bool);
+	int onMenuMsg(const MOUSEMSG &);
+	int onDrawMsg(const MOUSEMSG &);
 public:
 	Commander() :mouse{}, stage{ Hold }{
-        FlushMouseMsgBuffer();
-    }
+		FlushMouseMsgBuffer();
+	}
 	int getCommand();
-    Status getStage() { return stage; }
-    void setStage(Status s) { stage = s; }
-    MOUSEMSG &getMouse() { return mouse; }
-    vector<Response*>::iterator getObj(){ return obj; }
+	Status getStage() { return stage; }
+	void setStage(Status s) { stage = s; }
+	MOUSEMSG &getMouse() { return mouse; }
+	vector<Point*>::iterator& getObj(){ return obj; }
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);
