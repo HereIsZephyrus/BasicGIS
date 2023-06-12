@@ -23,8 +23,6 @@
 #include "GlobalVar.h"
 #include<cmath>
 
-using namespace Window_Object;
-using namespace Vecors;
 int Commander::getCommand()
 {
 	if (MouseHit()) {
@@ -73,28 +71,28 @@ vector<Response*>::iterator Commander::DictateButton(const MOUSEMSG &mouse)
         return objList.end();
     if (y >= _UButton && y <= _UButton + _HButton)
         //加载底图
-        return objList(1);
-    if (y >= _UButton + (_HButton+_GButton) && y <= _UButton + _HButton+ (_HButton + _GButton))
+        return objList.begin();
+    if (y >= _UButton + (_HButton + _GButton) && y <= _UButton + _HButton + (_HButton + _GButton))
         //加载矢量
-        return objList(2);
-    if (y >= _UButton + (_HButton + _GButton)*2 && y <= _UButton + _HButton + (_HButton + _GButton)*2)
+        return objList.begin() + 1;
+    if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton) * 2)
         //保存矢量
-        return objList(3);
-    if (y >= _UButton + (_HButton + _GButton)*3 && y <= _UButton + _HButton + (_HButton + _GButton)*3)
+        return objList.begin() + 2;
+    if (y >= _UButton + (_HButton + _GButton) * 3 && y <= _UButton + _HButton + (_HButton + _GButton) * 3)
         //画点
-        return objList(4);
-    if (y >= _UButton + (_HButton + _GButton)*4 && y <= _UButton + _HButton + (_HButton + _GButton)*4)
+        return objList.begin() + 3;
+    if (y >= _UButton + (_HButton + _GButton) * 4 && y <= _UButton + _HButton + (_HButton + _GButton) * 4)
         //画多边形
-        return objList(5);
-    if (y >= _UButton + (_HButton + _GButton)*5 && y <= _UButton + _HButton + (_HButton + _GButton)*5)
+        return objList.begin() + 4;
+    if (y >= _UButton + (_HButton + _GButton) * 5 && y <= _UButton + _HButton + (_HButton + _GButton) * 5)
         //画线
-        return objList(6);
-    if (y >= _UButton + (_HButton + _GButton)*6 && y <= _UButton + _HButton + (_HButton + _GButton)*6)
+        return objList.begin() + 5;
+    if (y >= _UButton + (_HButton + _GButton) * 6 && y <= _UButton + _HButton + (_HButton + _GButton) * 6)
         //转换模式
-        return objList(7);
+        return objList.begin() + 6;
     if (y >= _UButton + (_HButton + _GButton) * 7 && y <= _UButton + _HButton + (_HButton + _GButton) * 7)
         //退出
-        return objList(8);
+        return objList.begin() + 7;
     return objList.end();
 }
 
@@ -162,10 +160,10 @@ vector<Response *>::iterator Commander::FocusObjID(const MOUSEMSG &mouse)
             if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
                 return it;
         if (typeid(*it) == typeid(Line))
-            if (CheckEdges(x, y, dynamic_cast<Line *>(*it)))
+            if (Line::CheckEdges(x, y, dynamic_cast<Line *>(*it)))
                 return it;
         if (typeid(it) == typeid(Polygen))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
-            if ((CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
+            if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
                 return it;
         // 理论上Button对象不可能出现在Photo中，后期考虑写一个异常
     }
@@ -176,14 +174,7 @@ double Distance(const int& x1, const int& y1, const int& x2, const int& y2)
 {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
-int CalcLine(const int x, const int y, Polygen* obj)
-{
-    return 0;
-}
-bool CheckEdges(const int x, const int y, Line* obj)
-{
-    return false;
-}
+
 bool CheckExceed(const Response* obj, bool style)
 {
     if (style == 0)//Line
@@ -223,7 +214,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
         return 0;
     if (mouse.uMsg == WM_LBUTTONUP)
     {
-        if (stage != Drag)  break;
+        if (stage != Drag)  return 0;
         else
         {
             stage = Hold;//结束拖动

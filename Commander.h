@@ -1,5 +1,15 @@
 /***
  * @Author: ChanningTong Channing_TongCN@outlook.com
+ * @Date: 2023-06-11 22:10:24
+ * @LastEditors: ChanningTong Channing_TongCN@outlook.com
+ * @LastEditTime: 2023-06-12 10:25:34
+ * @FilePath: \BasicGIS\Commander.h
+ * @Description:
+ * @
+ * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
+ */
+/***
+ * @Author: ChanningTong Channing_TongCN@outlook.com
  * @Date: 2023-06-11 13:47:16
  * @LastEditors: ChanningTong Channing_TongCN@outlook.com
  * @LastEditTime: 2023-06-11 14:25:28
@@ -23,10 +33,10 @@
 #ifndef _COMMANDER_H_
 #define _COMMANDER_H_
 #include "Enums.h"
-#include "GlobalVar.h"
 #include<typeinfo>
 #include<graphics.h>
 #include<conio.h>
+#include<vector>
 using std::vector;
 class Response;
 class Display;
@@ -51,14 +61,16 @@ protected:
 public:
 	Commander() :mouse{}, stage{ Hold }{
         FlushMouseMsgBuffer();
-        obj=objList.end();
     }
 	int getCommand();
+    Status getStage() { return stage; }
+    void setStage(Status s) { stage = s; }
+    MOUSEMSG &getMouse() { return mouse; }
+    vector<Response*>::iterator getObj(){ return obj; }
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);
-int CalcLine(const int,const int, Polygen*);
-bool CheckEdges(const int, const int, Line*);
 bool CheckExceed(const Response*,bool );
 bool illegalClick(const MOUSEMSG&);
+
 #endif // !_COMMANDER_H_

@@ -1,528 +1,246 @@
 ﻿  Commander.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(54,13): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(89,1): error C2143: 语法错误: 缺少“;”(在“}”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(69,16): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(73,29): error C2440: “return”: 无法从“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”转换为“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”
-          with
-          [
-              _Ty=Vecors::Response *
-          ]
-          and
-          [
-              _Ty=Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(73,9): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(76,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(79,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(82,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(85,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(88,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(91,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(94,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(97,16): error C2064: 项不会计算为接受 1 个参数的函数
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(98,25): error C2440: “return”: 无法从“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”转换为“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”
-          with
-          [
-              _Ty=Vecors::Response *
-          ]
-          and
-          [
-              _Ty=Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(98,5): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(136,40): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(156,17): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,26): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,5): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,5): error C2440: “初始化”: 无法从“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”转换为“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”
-          with
-          [
-              _Ty=Vecors::Response *
-          ]
-          and
-          [
-              _Ty=Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,42): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,80): error C2678: 二进制“!=”: 没有找到接受“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”类型的左操作数的运算符(或没有可接受的转换)
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(159,21): message : 可能是“bool std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator !=(const std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> &) noexcept const”
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\guiddef.h(197,15): message : 或    “bool operator !=(const GUID &,const GUID &)”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(159,80): message : 尝试匹配参数列表“(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>, std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>)”时
-          with
-          [
-              _Ty=Response *
-          ]
-          and
-          [
-              _Ty=Vecors::Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(172,25): error C2440: “return”: 无法从“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”转换为“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”
-          with
-          [
-              _Ty=Vecors::Response *
-          ]
-          and
-          [
-              _Ty=Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(172,5): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(187,32): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(212,29): error C2678: 二进制“==”: 没有找到接受“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”类型的左操作数的运算符(或没有可接受的转换)
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(148,34): message : 可能是“bool std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator ==(const std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> &) noexcept const”
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\guiddef.h(192,15): message : 或    “bool operator ==(const GUID &,const GUID &)”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(212,29): message : 尝试匹配参数列表“(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>, std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>)”时
-          with
-          [
-              _Ty=Response *
-          ]
-          and
-          [
-              _Ty=Vecors::Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(216,8): error C2872: “Button”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(191,7): message : 可能是“Button”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(26,11): message : 或    “Vecors::Button”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(44,11): message : 或    “Window_Object::Button”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(254,24): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(255,33): error C2678: 二进制“==”: 没有找到接受“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”类型的左操作数的运算符(或没有可接受的转换)
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(148,34): message : 可能是“bool std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator ==(const std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> &) noexcept const”
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\guiddef.h(192,15): message : 或    “bool operator ==(const GUID &,const GUID &)”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(255,33): message : 尝试匹配参数列表“(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>, std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>)”时
-          with
-          [
-              _Ty=Response *
-          ]
-          and
-          [
-              _Ty=Vecors::Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(263,24): error C2872: “Response”: 不明确的符号
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(28,7): message : 可能是“Response”
-C:\Users\Administrator\GitHub\BasicGIS\GlobalVar.h(24,11): message : 或    “Vecors::Response”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(264,33): error C2678: 二进制“==”: 没有找到接受“std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>”类型的左操作数的运算符(或没有可接受的转换)
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(148,34): message : 可能是“bool std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator ==(const std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> &) noexcept const”
-          with
-          [
-              _Ty=Response *
-          ]
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\guiddef.h(192,15): message : 或    “bool operator ==(const GUID &,const GUID &)”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(264,33): message : 尝试匹配参数列表“(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>, std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>)”时
-          with
-          [
-              _Ty=Response *
-          ]
-          and
-          [
-              _Ty=Vecors::Response *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(226,29): error C2043: 非法 break
-  Errors.cpp
   main.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(89,1): error C2143: 语法错误: 缺少“;”(在“}”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(54,13): error C2065: “objList”: 未声明的标识符
   Objects.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(89,1): error C2143: 语法错误: 缺少“;”(在“}”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(44,41): error C2270: “getSize”: 非成员函数上不允许修饰符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(44,49): error C2065: “size”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(44,53): error C2143: 语法错误: 缺少“;”(在“}”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(62,1): error C2556: “void Squareness::_Draw(void)”: 重载函数与“int Squareness::_Draw(void)”只是在返回类型上不同
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(139): message : 参见“Squareness::_Draw”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(61,18): error C2371: “Squareness::_Draw”: 重定义；不同的基类型
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(139): message : 参见“Squareness::_Draw”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(66,14): error C2819: “Text”类型没有重载成员“operator ->”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(77): message : 参见“Text”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(66,14): message : 是否改用“.”?
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(66,21): error C2232: “->Text::Print”: 左操作数有“class”类型，使用“.”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(67,22): error C2819: “Text”类型没有重载成员“operator ->”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(77): message : 参见“Text”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(67,22): message : 是否改用“.”?
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(67,31): error C2232: “->Text::getSize”: 左操作数有“class”类型，使用“.”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(140,20): error C2660: “Polygen::_AddPoint”: 函数不接受 1 个参数
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(152,6): message : 参见“Polygen::_AddPoint”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(150,43): warning C4267: “初始化”: 从“size_t”转换到“unsigned int”，可能丢失数据
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(150,43): warning C4267: “初始化”: 从“size_t”转换到“const unsigned int”，可能丢失数据
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(151,15): error C2131: 表达式的计算结果不是常数
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(150,30): message : 因读取超过生命周期的变量而失败
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(150,30): message : 请参见“this”的用法
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,45): error C2226: 语法错误: 意外的“std::vector<Point,std::allocator<Point>>::iterator”类型
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,42): error C2146: 语法错误: 缺少“;”(在标识符“it”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,45): error C2143: 语法错误: 缺少“;”(在“=”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,45): error C2143: 语法错误: 缺少“)”(在“=”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,45): error C2059: 语法错误:“=”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,63): error C2065: “it”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,85): error C2065: “i”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,89): error C2065: “it”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(152,91): error C2059: 语法错误:“)”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(153,9): error C2146: 语法错误: 缺少“;”(在标识符“pts”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(153,13): error C2065: “i”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(153,22): error C2065: “it”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(153,35): error C2065: “it”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(153,16): error C3863: 不可指定数组类型“POINT [num]”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(162,14): error C2511: “int Polygen::_AddPoint(const MOUSEMSG &)”:“Polygen”中没有找到重载的成员函数
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(143): message : 参见“Polygen”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(167,47): error C2660: “Polygen::_Bind”: 函数不接受 1 个参数
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(154,6): message : 参见“Polygen::_Bind”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(170,45): error C2597: 对非静态成员“Response::color”的非法引用
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(32): message : 参见“Response::color”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(170,51): error C2597: 对非静态成员“Response::alpha”的非法引用
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(33): message : 参见“Response::alpha”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(171,49): error C2660: “Polygen::_Bind”: 函数不接受 1 个参数
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(154,6): message : 参见“Polygen::_Bind”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(179,14): error C2511: “int Polygen::_Bind(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>)”:“Polygen”中没有找到重载的成员函数
-          with
-          [
-              _Ty=Point
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(143): message : 参见“Polygen”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(260,78): error C2664: “bool InputBox(LPTSTR,int,LPCTSTR,LPCTSTR,LPCTSTR,int,int,bool)”: 无法将参数 1 从“std::string”转换为“LPTSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(260,18): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\easyx.h(285,6): message : 参见“InputBox”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(267,98): error C2664: “bool InputBox(LPTSTR,int,LPCTSTR,LPCTSTR,LPCTSTR,int,int,bool)”: 无法将参数 1 从“std::string”转换为“LPTSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(267,18): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\easyx.h(285,6): message : 参见“InputBox”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(270,22): error C2664: “void Button::SaveToFile(std::fstream *)”: 无法将参数 1 从“std::fstream”转换为“std::fstream *”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(270,20): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(200,7): message : 参见“Button::SaveToFile”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(276,77): error C2664: “bool InputBox(LPTSTR,int,LPCTSTR,LPCTSTR,LPCTSTR,int,int,bool)”: 无法将参数 1 从“std::string”转换为“LPTSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(276,18): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\easyx.h(285,6): message : 参见“InputBox”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(279,24): error C2664: “void Button::LoadFromFile(std::fstream *)”: 无法将参数 1 从“std::fstream”转换为“std::fstream *”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(279,22): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(201,7): message : 参见“Button::LoadFromFile”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(287,22): error C2664: “void Button::SaveToFile(std::fstream *)”: 无法将参数 1 从“std::fstream”转换为“std::fstream *”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(287,20): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.h(200,7): message : 参见“Button::SaveToFile”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(302,15): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(310,15): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(318,15): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(336,24): error C2665: “loadimage”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\easyx.h(256,6): message : 可能是“void loadimage(IMAGE *,LPCTSTR,int,int,bool)”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(336,5): message : “void loadimage(IMAGE *,LPCTSTR,int,int,bool)”: 无法将参数 2 从“std::string”转换为“LPCTSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(336,20): message : 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\easyx.h(256,6): message : 参见“loadimage”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(336,24): message : 尝试匹配参数列表“(IMAGE *, std::string)”时
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(342,5): error C2873: “Window_Object”: 符号不能用在 using 声明中
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(345,71): error C2664: “int MessageBoxW(HWND,LPCWSTR,LPCWSTR,UINT)”: 无法将参数 2 从“const char [18]”转换为“LPCWSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(345,26): message : 指向的类型不相关; 转换需要 reinterpret_cast、C 样式强制转换或带圆括号的函数样式强制转换
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winuser.h(9161,1): message : 参见“MessageBoxW”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(356,71): error C2664: “int MessageBoxW(HWND,LPCWSTR,LPCWSTR,UINT)”: 无法将参数 2 从“const char [18]”转换为“LPCWSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(356,26): message : 指向的类型不相关; 转换需要 reinterpret_cast、C 样式强制转换或带圆括号的函数样式强制转换
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winuser.h(9161,1): message : 参见“MessageBoxW”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(359,5): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(360,5): error C2065: “elmList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(361,5): error C2065: “butList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(362,11): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(362,20): error C2065: “elmList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(362,30): error C2065: “butList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(363,23): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(363,5): error C2530: “pshp”: 必须初始化引用
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(363,5): error C3531: “pshp”: 类型包含“auto”的符号必须具有初始值设定项
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(363,21): error C2143: 语法错误: 缺少“;”(在“:”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(363,30): error C2143: 语法错误: 缺少“;”(在“)”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(365,20): error C2100: 非法的间接寻址
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(367,23): error C2065: “elmList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(367,5): error C2530: “pshp”: 必须初始化引用
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(367,5): error C3531: “pshp”: 类型包含“auto”的符号必须具有初始值设定项
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(367,21): error C2143: 语法错误: 缺少“;”(在“:”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(367,30): error C2143: 语法错误: 缺少“;”(在“)”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(369,20): error C2100: 非法的间接寻址
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(371,23): error C2065: “butList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(371,5): error C2530: “pshp”: 必须初始化引用
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(371,5): error C3531: “pshp”: 类型包含“auto”的符号必须具有初始值设定项
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(371,21): error C2143: 语法错误: 缺少“;”(在“:”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(371,30): error C2143: 语法错误: 缺少“;”(在“)”的前面)
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(373,20): error C2100: 非法的间接寻址
   Solution.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(54,13): error C2065: “objList”: 未声明的标识符
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(21,31): error C2665: “std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(_Ty &&)”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(19,33): error C2665: “std::vector<Display *,std::allocator<Display *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Display *,std::allocator<Display *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Display *
+              _Ty=Display *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Display *,std::allocator<Display *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Display *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(21,12): message : “void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Squareness (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(19,12): message : “void std::vector<Display *,std::allocator<Display *>>::push_back(const _Ty &)”: 无法将参数 1 从“Squareness (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Display *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(21,31): message : 原因如下: 无法从“Window_Object::Squareness (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(19,33): message : 原因如下: 无法从“Squareness (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Display *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(21,23): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(21,31): message : 尝试匹配参数列表“(Window_Object::Squareness (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,38): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(19,24): message : 没有使该转换得以执行的上下文
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Display *,std::allocator<Display *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(19,33): message : 尝试匹配参数列表“(Squareness (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(22,38): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(22,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,38): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(22,38): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
+          ]
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(22,27): message : 没有使该转换得以执行的上下文
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(22,38): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,39): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
+          with
+          [
+              _Ty=Button *
+          ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
+          with
+          [
+              _Ty=Button *
+          ]
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
+          with
+          [
+              _Ty=Button *
+          ]
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,39): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
+          with
+          [
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,38): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(24,39): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(26,39): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,39): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(28,39): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,38): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,39): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,38): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,39): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,38): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(30,38): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,37): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,38): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,37): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,38): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,37): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(32,37): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,38): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,37): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,38): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,37): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(34,38): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): error C2665: “std::vector<Button *,std::allocator<Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Button *,std::allocator<Button *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,16): message : “void std::vector<Button *,std::allocator<Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Button (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): message : 原因如下: 无法从“Button (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Button *
           ]
 C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(38,38): error C2665: “std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(_Ty &&)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Button *,std::allocator<Button *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(36,38): message : 尝试匹配参数列表“(Button (__cdecl *)(void))”时
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(41,27): error C2665: “std::vector<Display *,std::allocator<Display *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Display *,std::allocator<Display *>>::push_back(_Ty &&)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Display *
           ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Display *,std::allocator<Display *>>::push_back(const _Ty &)”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(38,16): message : “void std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty &”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(41,12): message : “void std::vector<Display *,std::allocator<Display *>>::push_back(const _Ty &)”: 无法将参数 1 从“Squareness (__cdecl *)(void)”转换为“const _Ty &”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(38,38): message : 原因如下: 无法从“Window_Object::Button (__cdecl *)(void)”转换为“const _Ty”
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(41,27): message : 原因如下: 无法从“Squareness (__cdecl *)(void)”转换为“const _Ty”
           with
           [
-              _Ty=Vecors::Button *
+              _Ty=Display *
           ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(38,27): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Button *,std::allocator<Vecors::Button *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(38,38): message : 尝试匹配参数列表“(Window_Object::Button (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(43,27): error C2665: “std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back”: 2 个重载中没有一个可以转换所有参数类型
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(916,23): message : 可能是“void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(_Ty &&)”
-          with
-          [
-              _Ty=Vecors::Display *
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 或    “void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(const _Ty &)”
-          with
-          [
-              _Ty=Vecors::Display *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(43,12): message : “void std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back(const _Ty &)”: 无法将参数 1 从“Window_Object::Squareness (__cdecl *)(void)”转换为“const _Ty &”
-          with
-          [
-              _Ty=Vecors::Display *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(43,27): message : 原因如下: 无法从“Window_Object::Squareness (__cdecl *)(void)”转换为“const _Ty”
-          with
-          [
-              _Ty=Vecors::Display *
-          ]
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(43,23): message : 没有使该转换得以执行的上下文
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Vecors::Display *,std::allocator<Vecors::Display *>>::push_back”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(43,27): message : 尝试匹配参数列表“(Window_Object::Squareness (__cdecl *)(void))”时
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(45,27): error C2248: “Commander::stage”: 无法访问 private 成员(在“Commander”类中声明)
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(41): message : 参见“Commander::stage”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(37): message : 参见“Commander”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(45,39): error C2248: “Commander::mouse”: 无法访问 private 成员(在“Commander”类中声明)
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(40): message : 参见“Commander::mouse”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(37): message : 参见“Commander”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(45,51): error C2248: “Commander::obj”: 无法访问 private 成员(在“Commander”类中声明)
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(42): message : 参见“Commander::obj”的声明
-C:\Users\Administrator\GitHub\BasicGIS\Commander.h(37): message : 参见“Commander”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(41,23): message : 没有使该转换得以执行的上下文
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(912,23): message : 参见“std::vector<Display *,std::allocator<Display *>>::push_back”的声明
+C:\Users\Administrator\GitHub\BasicGIS\Solution.cpp(41,27): message : 尝试匹配参数列表“(Squareness (__cdecl *)(void))”时
   正在生成代码...
+C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(478): error C4700: 使用了未初始化的局部变量“photoName”

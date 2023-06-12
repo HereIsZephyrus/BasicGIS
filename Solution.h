@@ -25,8 +25,8 @@
 #ifndef _SOLUTION_H_
 #define _SOLUTION_H_
 class Commander;
-void Initialize(const Commander&);
-void ShutDown(const Commander&);
+void Initialize(Commander&);
+void ShutDown(Commander&);
 
 #endif // !_SOLUTION_H_
 

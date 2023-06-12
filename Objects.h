@@ -20,7 +20,7 @@ namespace ColorConst {
 using namespace ColorConst;
 constexpr bool DRAWING = false;
 constexpr bool EXISTED = true;
-static string filename;
+static LPTSTR filename;
 
 
 class Commander ;
@@ -34,11 +34,11 @@ protected:
 	static unsigned int count;
     bool drawed;
 	unsigned int id;
-	virtual int _Draw() = 0;
-    virtual int _Delete() = 0;
+
 public:
 	Response() :X(0), Y(0), borderBold(_BOLD_), color(0), alpha(1) {
 		id = ++count;
+		drawed = false;
 	}
 	Response(int x, int y, int Bold, int Color, double Alpha) :X(x), Y(y), borderBold(Bold), color(Color), alpha(Alpha) {
 		id=++count;
@@ -47,9 +47,11 @@ public:
 	~Response() {
 		--count;
 	}
+	virtual int _Draw() =0;
+	virtual int _Delete()=0;
 	virtual int ClickLeft(bool,const MOUSEMSG&) = 0;
     virtual int ClickRight(bool, const MOUSEMSG &) = 0;
-    virtual int Suspend() = 0;
+    virtual int Suspend()=0;
     void Move(const int& , const int& );
 	int getX() const;
 	int getY() const;
@@ -64,11 +66,11 @@ protected:
 	int X, Y;
 	static unsigned int count;
 	unsigned int id;
-	virtual int _Draw() = 0;
-    virtual int _Delete() = 0;
+	bool drawed;
 public:
 	Display(int x, int y) :X(x), Y(y) {
 		id = ++count;
+		drawed = false;
 	}
 	~Display() {
 		--count;
@@ -76,6 +78,8 @@ public:
 	int getX() const;
 	int getY() const;
 	int getID() const;
+	virtual int _Draw() =0;
+	virtual int _Delete()=0;
 };
 
 class Text {
@@ -89,17 +93,10 @@ public:
     int getY() const;
     int getColor() const;
 	int getSize() const;
-	void Print(const int&,const int&)
+	void Print(const int&, const int&);
 };
 class Point :public Response
 {
-public:
-    enum PointType{
-        POINT,
-        LINE,
-        POLYGEN,
-        MAX_OBJECT
-    };
 private:
 	int size;
 	Text info;
@@ -108,13 +105,12 @@ protected:
 	virtual int _Delete();
 	virtual void DisplayInfo() const;
 	virtual int _Draw();
-    virtual int _Delete();
     unsigned int father;//派生类可以修改father！这符合father的含义！
 public:
 	Point(int X, int Y, int Bold, int Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Bold, Color, Alpha), type(Type),size(Size) {father=id;}
     ~Point() { _Delete(); }
     int getSize() const;
-	int getType() const;
+	PointType getType() const;
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
@@ -132,6 +128,7 @@ public:
 	int getTermX() const;
 	int getTermY() const;
 	int getBold() const;
+	inline double CalcX(const int&);
 	virtual void DisplayInfo() const;
 };
 
@@ -178,6 +175,7 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+	static int CalcLine(const int&, const int&, Polygen*);
 };
 class Line :public Response
 {
@@ -206,6 +204,7 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+	static bool CheckEdges(const int&, const int&, Line*);
 };
 
 class Button :public Response
@@ -214,13 +213,13 @@ friend class Commander;
 private:
 	int width, height;
 	Text info;
-	ButtonType type;
+	ButtonType btype;
 protected:
-	int LoadPhoto(string);
-	void SaveToFile(fstream*);
-	void LoadFromFile(fstream*);
+	int LoadPhoto(LPTSTR&);
+	void SaveToFile(fstream&);
+	void LoadFromFile(fstream&);
 public:
-	Button(int X, int Y, int Bold, int Color, int w, int h) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), type{ NOEXIST_BUTTON } {};
+	Button(int X, int Y, int Bold, int Color, int w, int h) :Response(X, Y, Bold, Color, ALPHA), width(w), height(h), btype{ NOEXIST_BUTTON } {};
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
@@ -229,4 +228,7 @@ public:
     virtual int _Delete();
     virtual void DisplayInfo() const;
 };
+
+Line* FindLine(int ID);
+Polygen* FindPolygen(int ID);
 #endif // !_OBJECTS_H_

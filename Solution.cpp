@@ -11,14 +11,12 @@
 #include "Solution.h"
 #include "Commander.h"
 #include "GlobalVar.h"
-using namespace Vecors;
-using namespace Window_Object;
 
-void Initialize(const Commander& cmder) {
+void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
     //绘制Toolbar
     //...
-    elmList.push_back(&toolbar);
+    elmList.push_back( & toolbar);
     {
         //绘制按钮
         butList.push_back(&exitButton);
@@ -42,11 +40,11 @@ void Initialize(const Commander& cmder) {
    
     elmList.push_back(&map);
 
-    loadButton.Press(cmder.stage,cmder.mouse,cmder.obj);//加载一张先
+    loadButton.Press(cmder.getStage(), cmder.getMouse(), cmder.getObj());//加载一张先
     
 	return;
 }
-void ShutDown(const Commander& cmder) {
+void ShutDown(Commander& cmder) {
     objList.clear();
     elmList.clear();
     butList.clear();

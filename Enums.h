@@ -27,5 +27,11 @@ enum Areas
 	Photo,
 	OUT_OF_RANGE
 };
+enum class PointType {
+	POINT,
+	LINE,
+	POLYGEN,
+	MAX_OBJECT
+};
 #endif // !_ENUMS_H_
 
