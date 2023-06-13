@@ -8,6 +8,7 @@
 #include<string>
 #include<vector>
 using std::string;
+using std::wstring;
 using std::vector;
 using std::fstream;
 namespace ColorConst {
@@ -56,6 +57,7 @@ public:
 	int getX() const;
 	int getY() const;
 	int getID() const;
+	unsigned int getCount() const { return count; };
 	double getColor() const;
 	double getAlpha() const;
 };
@@ -81,6 +83,7 @@ public:
 	int getID() const;
 	virtual int _Draw() =0;
 	virtual int _Delete()=0;
+	unsigned int getCount() const { return count; };
 };
 
 class Text {
@@ -95,7 +98,7 @@ public:
     int getY() const;
 	COLORREF  getColor() const;
 	int getSize() const;
-	void Print(const int&, const int&);
+	void Print(COLORREF);
 };
 class Point :public Response
 {
@@ -220,7 +223,7 @@ private:
 	Text info;
 	ButtonType btype;
 protected:
-	int LoadPhoto(LPTSTR&);
+	int LoadPhoto(wstring&);
 	void SaveToFile(fstream&);
 	void LoadFromFile(fstream&);
 public:

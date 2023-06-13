@@ -22,8 +22,9 @@
 #include "GlobalVar.h"
 #include <fstream>
 #include <iostream>
-#include<graphics.h>
-#include<conio.h>
+#include <graphics.h>
+#include <conio.h>
+#include <Windows.h>
 
 vector<Point*> objList;
 vector<Squareness*> elmList;
@@ -51,8 +52,16 @@ int Text::getX() const                  {return X;}
 int Text::getY() const                  {return Y;}
 COLORREF  Text::getColor() const              {return color;}
 int Text::getSize() const               { return size; }
-void Text::Print(const int& x, const int& y)
+void Text::Print(COLORREF backColor)
 {
+	int len = MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, wstr, len);
+	//settextstyle(size);
+	setbkcolor(backColor);
+	settextcolor(BLACK);
+	outtextxy(X, Y, wstr);
+	delete[] wstr;
 	return;
 }
 
@@ -66,10 +75,6 @@ void Borden::DisplayInfo() const
 	return;
 }
 
-void Print(const int& x, const int& y)
-{
-	return;
-}
 void Squareness::AddText(Text texts)
 {
 	msg.push_back(texts);
@@ -78,10 +83,11 @@ void Squareness::AddText(Text texts)
 int Squareness::_Draw()
 {
 	int x = X,y=Y;
+	setfillcolor(color);
 	fillrectangle(X,Y,X+width,Y+height);
 	for (vector<Text>::iterator it = msg.begin(); it != msg.end(); ++it)
 	{
-		(*it).Print(x,y);
+		(*it).Print(color);
 		y = y + (*it).getSize()+_dy;
 	}
 	//@@@@@@@@@@@@@@@HereIsZephyrus绘制边框
@@ -478,10 +484,12 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 	{
 	case Load:
 	{
-		LPTSTR photoName{};
-		InputBox(photoName, 50, L"请输入图片绝对路径与完整名称");
+		wchar_t buffer[100] = { 0 };
+		InputBox(buffer, 100, L"请输入图片路径与名称");
+		std::wstring photoName=buffer;
 		if (LoadPhoto(photoName))
 			//fail to load
+			return 1;
 		break;
 	}
 	case New:
@@ -544,21 +552,33 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 		break;
 	}
 	}
-		return 0;
+	return 0;
 }
 int Button::_Draw()
 {
-	//fillroundrect();
+	setfillcolor(color);
+	fillroundrect(X, Y, X + width, Y + height, _Ellipse, _Ellipse);
+	info.Print(color);
 	return 0;
 }
 int Button::_Delete()
 {
 	return 0;
 }
-int Button::LoadPhoto(LPTSTR& name)
+int Button::LoadPhoto(std::wstring& name)
 {
 	IMAGE	img;
-	loadimage(&img,name);
+	int len = WideCharToMultiByte(CP_ACP, 0, name.c_str(), -1, NULL, 0, NULL, NULL);
+	char* str = new char[len];
+	WideCharToMultiByte(CP_ACP, 0, name.c_str(), -1, str, len, NULL, NULL);
+	int len2 = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len2];
+	MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len2);
+	LPCTSTR lname = wstr;
+	loadimage(&img,lname);
+	delete[] str;
+	delete[] wstr;
+	//打开失败返回1
 	putimage(_WTool, 0, &img);
 	return 0;
 }

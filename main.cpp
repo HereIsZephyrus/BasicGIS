@@ -20,21 +20,20 @@ int main(int argc,char *argv[]) {
     bool bExit = false;
     while (!bExit)
     {
-        system("pause");
         switch (cmder.getCommand())//异常控制
         {
             case 0: {
-                ShutDown(cmder);
-                bExit = true;
+                //empty
                 break;
             }
             case -1: {
+                ShutDown(cmder);
+                bExit = true;
                 //failed
                 break;
             }
             default: {
-
-                bExit = true;
+                //failed暂时先空转
                 break;
             }
         }
