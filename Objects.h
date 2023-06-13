@@ -53,6 +53,7 @@ public:
 	virtual int ClickLeft(bool,const MOUSEMSG&) = 0;
     virtual int ClickRight(bool, const MOUSEMSG &) = 0;
     virtual int Suspend()=0;
+    virtual int UnSuspend()=0;
     void Move(const int& , const int& );
 	int getX() const;
 	int getY() const;
@@ -119,6 +120,7 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+    virtual int UnSuspend();
 	virtual int _Draw();
 };
 class Borden :public Display
@@ -166,7 +168,7 @@ protected:
 	double CalcArea();
     int _AddPoint(const MOUSEMSG &);
     int _DeletePoint(const unsigned int &);
-    int _Erase(vector<Borden>::iterator);
+    int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
     virtual int _Draw();
     virtual int _Delete();
@@ -175,6 +177,10 @@ public:
     Polygen() : Response(), points{}, borders{}, area(0), shownedInfo(false) {}
 	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
 	~Polygen() {
+    for (auto i = points.begin(); i != points.end(); ++i)
+        i->~Point();
+    for (auto i = borders.begin(); i != borders.end(); ++i)
+        i->~Borden();
 		points.clear();
 		borders.clear();
         _Delete();
@@ -182,6 +188,7 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+    virtual int UnSuspend();
 	static int CalcLine(const int&, const int&, Polygen*);
 };
 class Line :public Response
@@ -198,13 +205,17 @@ protected:
 	int _DeletePoint(const unsigned int&);
     virtual int _Draw();
     virtual int _Delete();
-    int _Erase(vector<Borden>::iterator);
+    int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
     Line() : Response(), points{}, borders{}, length(0), shownedInfo(false) {}
 	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
 	~Line() {
+    for (auto i = points.begin(); i != points.end(); ++i)
+        i->~Point();
+    for (auto i = borders.begin(); i != borders.end(); ++i)
+        i->~Borden();
 		points.clear();
 		borders.clear();
         _Delete();
@@ -212,6 +223,7 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
+    virtual int UnSuspend();
 	static bool CheckEdges(const int&, const int&, Line*);
 };
 
@@ -231,7 +243,8 @@ public:
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
-	int Press(Status,const MOUSEMSG&, vector<Point*>::iterator&);
+	virtual int UnSuspend();
+	int Press(Status,const MOUSEMSG&, Point*);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;

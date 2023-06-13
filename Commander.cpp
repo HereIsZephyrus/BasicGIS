@@ -25,18 +25,23 @@
 
 int Commander::getCommand()
 {
-	if (MouseHit()) {
-		mouse = GetMouseMsg();
+    mouse = GetMouseMsg();
+    if (MouseHit())
+    {
+        if (mouse.x>_Width || mouse.y>_Height)
+            MessageBox(NULL, L"???", L"???", NULL);
         if (illegalClick(mouse))
             return 0;
 		switch (static_cast<int>(DictateArea(mouse)))
 		{
 		case static_cast<int>(Toolbar) : {//理论上在工具栏中可操作对象是按钮为充分必要的
+            MessageBox(NULL, L"ToolBar", L"ToolBar", NULL);
             int CMD=onMenuMsg(mouse);
             if (CMD == 1)   {return 0;}
 			break;
 		}
 		case static_cast<int>(Photo): {
+            MessageBox(NULL, L"Photo", L"Photo", NULL);
             onDrawMsg(mouse);
             break;
         }
@@ -45,10 +50,7 @@ int Commander::getCommand()
 		}
         UpdateStage(mouse);//更新鼠标对象状态
     }
-	else {
-		//failed
-	}
-	return 0;
+    return 0;
 }
 
 Areas Commander::DictateArea(const MOUSEMSG& mouse)
@@ -64,39 +66,39 @@ Areas Commander::DictateArea(const MOUSEMSG& mouse)
 	}
 	return OUT_OF_RANGE;
 }
-vector<Point*>::iterator Commander::DictateButton(const MOUSEMSG &mouse)
+Button* Commander::DictateButton(const MOUSEMSG &mouse)
 {
     int x = mouse.x,y = mouse.y;
     if (x<_LButton || x>_LButton+_WButton)//所有的鼠标都是对齐的，
-        return objList.end();
+        return *butList.end();
     if (y >= _UButton && y <= _UButton + _HButton)
         //加载底图
-        return objList.begin();
+        return *butList.begin();
     if (y >= _UButton + (_HButton + _GButton) && y <= _UButton + _HButton + (_HButton + _GButton))
         //新建矢量
-        return objList.begin() + 1;
+        return *(butList.begin() + 1);
     if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton))
         //加载矢量
-        return objList.begin() + 2;
+        return *(butList.begin() + 2);
     if (y >= _UButton + (_HButton + _GButton) * 3 && y <= _UButton + _HButton + (_HButton + _GButton) * 3)
         //保存矢量
-        return objList.begin() + 3;
+        return *(butList.begin() + 3);
     if (y >= _UButton + (_HButton + _GButton) * 4 && y <= _UButton + _HButton + (_HButton + _GButton) * 4)
         //画点
-        return objList.begin() + 4;
+        return *(butList.begin() + 4);
     if (y >= _UButton + (_HButton + _GButton) * 5 && y <= _UButton + _HButton + (_HButton + _GButton) * 5)
         //画线
-        return objList.begin() + 5;
+        return *(butList.begin() + 5);
     if (y >= _UButton + (_HButton + _GButton) * 6 && y <= _UButton + _HButton + (_HButton + _GButton) * 6)
         //画多边形
-        return objList.begin() + 6;
+        return *(butList.begin() + 6);
     if (y >= _UButton + (_HButton + _GButton) * 7 && y <= _UButton + _HButton + (_HButton + _GButton) * 7)
         //转换模式
-        return objList.begin() + 7;
+        return *(butList.begin() + 7);
     if (y >= _UButton + (_HButton + _GButton) * 8 && y <= _UButton + _HButton + (_HButton + _GButton) * 8)
         //退出
-        return objList.begin() + 8;
-    return objList.end();
+        return *(butList.begin() + 8);
+    return *butList.end();
 }
 
 void Commander::UpdateStage(const MOUSEMSG &mouse)
@@ -134,18 +136,18 @@ void Commander::UpdateStage(const MOUSEMSG &mouse)
     return;
 }
 
-void Commander::TOclick(vector<Point*>::iterator obj,const MOUSEMSG& mouse,bool STATUS)
+void Commander::TOclick(Point* obj,const MOUSEMSG& mouse,bool STATUS)
 {
     switch (mouse.uMsg)
     {
     case WM_LBUTTONDOWN:
     {
-        (*obj)->ClickLeft(STATUS, mouse);
+        obj->ClickLeft(STATUS, mouse);
         break;
     }
     case WM_RBUTTONDOWN:
     {
-        (*obj)->ClickRight(STATUS, mouse);
+        obj->ClickRight(STATUS, mouse);
         break;
     }
     default:
@@ -154,23 +156,22 @@ void Commander::TOclick(vector<Point*>::iterator obj,const MOUSEMSG& mouse,bool 
     return;
 }
 
-vector<Point*>::iterator Commander::FocusObjID(const MOUSEMSG &mouse)
+Point* Commander::FocusObjID(const int x,const int y)
 {
-    const int x = mouse.x, y = mouse.y;
     for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); it++)
     {
-        if (typeid(*it) == typeid(Point)) // 指到点的范围内就可以，注意Point的X和Y是中心点
+        if (typeid(*it) == typeid(Point*)) // 指到点的范围内就可以，注意Point的X和Y是中心点
             if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
-                return it;
-        if (typeid(*it) == typeid(Line))
+                return *it;
+        if (typeid(*it) == typeid(Line*))
             if (Line::CheckEdges(x, y, dynamic_cast<Line *>(*it)))
-                return it;
-        if (typeid(it) == typeid(Polygen))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
+                return *it;
+        if (typeid(*it) == typeid(Polygen*))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
             if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
-                return it;
+                return *it;
         // 理论上Button对象不可能出现在Photo中，后期考虑写一个异常
     }
-    return objList.end();
+    return nullptr;
 }
 
 double Distance(const int& x1, const int& y1, const int& x2, const int& y2)
@@ -202,17 +203,27 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 {
     if (mouse.uMsg != WM_LBUTTONUP) // 除了左键放开，在工具栏都是点着玩的
         return 0;
-    obj = DictateButton(mouse);
-    if (obj == objList.end())
+    Button* focusedObj = DictateButton(mouse);
+    if (focusedObj == * butList.end())
         return 0;//没有点击在有效对象上
-    //if ((*obj)->getID() > ButtonNum)//这是一个没有被定义的行为，要报个错
-    //    return 0;
-    if (!dynamic_cast<Button*>((*obj))->Press(stage, mouse, obj))
+    if (focusedObj->getID() > ButtonNum)//这是一个没有被定义的行为，要报个错
+        return -1;
+    focusedObj->Suspend();
+    if (!focusedObj->Press(stage, mouse, obj))
+    {
+        focusedObj->UnSuspend();
         return 1;
+    }
     return 0;
 }
 int Commander::onDrawMsg(const MOUSEMSG& mouse)
 {
+    Point* focusedObj = FocusObjID(mouse.x, mouse.y);
+    if (obj != nullptr && obj != focusedObj)//如果鼠标不在之前focus的对象上
+        obj->UnSuspend();//取消之前的focus
+    if (focusedObj != nullptr)//如果鼠标在新的对象上
+        focusedObj->Suspend();//focus新的对象
+    obj = focusedObj;//更新focus对象
     if (mouse.uMsg == WM_RBUTTONUP)//这个动作是不被定义的，右键只会被用来删除，而删除是瞬间的
         return 0;
     if (mouse.uMsg == WM_LBUTTONUP)
@@ -222,13 +233,13 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
         {
             stage = Hold;//结束拖动
             if (typeid(*obj) == typeid(Line))
-                if (!CheckExceed(*obj, 0))
+                if (!CheckExceed(obj, 0))
                 {
                     // 越界了，非法拖动
                     return -1;
                 }
             if (typeid(*obj) == typeid(Polygen))
-                if (!CheckExceed(*obj, 1))
+                if (!CheckExceed(obj, 1))
                 {
                     // 越界了，非法拖动
                     return -1;
@@ -245,19 +256,17 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
     }
     case Hold: // 空载状态，可能将更新已有矢量状态
     {
-        vector<Point*>::iterator obj = FocusObjID(mouse);
-        if (obj == objList.end())
+        Point* obj = FocusObjID(mouse.x,mouse.y);
+        if (obj == nullptr)
             break;
-        (*obj)->Suspend();//被focus的高亮显示
         TOclick(obj, mouse, EXISTED);
         break;
     }
     case Drag:
     {
-        vector<Point*>::iterator obj = FocusObjID(mouse);
-        if (obj == objList.end())
+        Point* obj = FocusObjID(mouse.x,mouse.y);
+        if (obj == nullptr)
             break;
-        (*obj)->Suspend();//被focus的高亮显示
         switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态
         {
         case WM_LBUTTONUP:
@@ -267,7 +276,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
         }
         case WM_LBUTTONDOWN://结束拖动
         {
-            (*obj)->Move(mouse.x - (*obj)->getX(), mouse.y - (*obj)->getY());
+            //obj->Move(mouse.x - obj->getX(), mouse.y - obj->getY());
             break;
         }
         case WM_MOUSEMOVE:

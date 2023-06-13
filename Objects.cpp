@@ -148,8 +148,15 @@ PointType Point::getType() const
 }
 int Point::Suspend()
 {
-	color = 1; alpha = 0.8;
+	size=size*2;
+    _Draw();
 	return 0;
+}
+int Point::UnSuspend()
+{
+    size = size /2;
+    _Draw();
+    return 0;
 }
 int Point::_Draw()
 {
@@ -231,18 +238,34 @@ int Polygen::Suspend()
 {
 	//填充一个多边形出来，透明度低一些
 	const size_t num = points.size();
-	/*
-	new POINT pts[num];;
-	for (int i=0,vector<Point>::iterator it = points.begin(); it != points.end(); ++i,++it)
-		*pts[i] = { (*it).getX(),(*it).getY() };
-	fillpolygon(pts, num);//！！！再把透明度做一下
-	*/
-	return 0;
+    if (num < 3) return 1;//failed
+    vector<POINT> pts;
+	for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+    {
+		POINT pt;	
+		pt.x = (*it).getX();	pt.y = (*it).getY();
+        pts.push_back(pt);
+    }
+    setbkcolor(fColor); // 设置背景色为红色
+    //setalpha(128);                  // 设置透明度为 50%
+    fillpolygon(&pts[0], static_cast<int>(num));
+    return 0;
+}
+int Polygen::UnSuspend()
+{
+    //擦掉填充的多边形
+    cleardevice();
+    return 0;
 }
 double Polygen::CalcArea()
 {
-	//有时间再开发，不是特别难写，想用树状数组，但是不好调试太久没写了
-	return 0;
+    //利用三角形划分求多边形面积(有待调试，不保真)
+    double area=0;
+    for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        area+=(*it).getX()*(*(it+1)).getY()-(*it).getY()*(*(it+1)).getX();
+    }
+    return area/2;
 }
 int Polygen::_AddPoint(const MOUSEMSG& mouse)
 {
@@ -261,12 +284,12 @@ int Polygen::_DeletePoint(const unsigned int& id)
 {
 	//从队列中删除一个点，然后重新绑定边
 	vector<Point>::iterator p = points.begin();
-	vector<Borden>::iterator b;
+	Borden* b;
 	if ((*p).getID() == id)
 	{
-		b=borders.begin();
+		b=&*borders.begin();
 		_Erase(b);
-		b=borders.end()-1;
+		b=&*(borders.end()-1);
 		_Erase(b);
 		points.erase(p);
 		_Bind(points.begin(), points.end() - 1);
@@ -275,17 +298,17 @@ int Polygen::_DeletePoint(const unsigned int& id)
 	p = points.end()-1;
 	if ((*p).getID() == id)
 	{
-		b = borders.end() - 1;
+		b = &*(borders.end() - 1);
 		_Erase(b);
-		b = borders.end()-2;//一个矩形一定起码有三条边的！不会越界
+		b = &*(borders.end()-2);//一个矩形一定起码有三条边的！不会越界
 		_Erase(b);
 		points.erase(p);
 		_Bind(points.begin(), points.end() - 1);
 		return 0;
 	}
-	for (p = points.begin()+1,b=borders.begin()+1; p != points.end(); ++p,++b)
+	for (p = points.begin()+1,b=&*(borders.begin()+1); p != points.end(); ++p,++b)
 	{
-		if (b==borders.end())//failed
+		if (b==&*borders.end())//failed
 			return 1;
 		if ((*p).getID() == id)
 		{
@@ -299,15 +322,20 @@ int Polygen::_DeletePoint(const unsigned int& id)
 }
 int Polygen::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
 {
-	const int x1 = (*p1).getX(), y1 = (*p1).getY(), x2 = (*p2).getX(), y2 = (*p2).getY();
+	const int x1 = ( * p1).getX(), y1 = (*p1).getY(), x2 = (*p2).getX(), y2 = (*p2).getY();
 	borders.push_back(Borden(x1, y1, x2, y2));
 	return 0;
 }
-int Polygen::_Erase(vector<Borden>::iterator b)
+int Polygen::_Erase(Borden* b)
 {
 	//这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
 	//！！！记得擦掉图像
-	borders.erase(b);
+	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
+		if (&*it == b)
+		{
+			borders.erase(it);
+			return 0;
+		}
 	return 0;
 }
 int Polygen::_Draw()
@@ -362,8 +390,16 @@ int Line::Suspend()
 	//把线变个色
 	return 0;
 }
+int Line::UnSuspend()
+{
+    //把线变回来
+    return 0;
+}
 double Line::CalcLength()
 {
+    double res=0;
+    for (vector<Point>::iterator it = points.begin()+1; it != points.end(); ++it)
+        res += sqrt(((*it).getX() - (*(it - 1)).getX()) * ((*it).getX() - (*(it - 1)).getX()) + ((*it).getY() - (*(it - 1)).getY()) * ((*it).getY() - (*(it - 1)).getY()));
 	return 0;
 }
 bool Line::CheckEdges(const int& x, const int& y, Line* obj)
@@ -405,10 +441,9 @@ int Line::_DeletePoint(const unsigned int& id )
 {
 	// 从队列中删除一个点，然后重新绑定边
 	vector<Point>::iterator p = points.begin();
-	vector<Borden>::iterator b;
+	Borden* b= &*borders.begin();
 	if ((*p).getID() == id)
 	{
-		b = borders.begin();
 		_Erase(b);
 		points.erase(p);
 		return 0;
@@ -416,14 +451,14 @@ int Line::_DeletePoint(const unsigned int& id )
 	p = points.end() - 1;
 	if ((*p).getID() == id)
 	{
-		b = borders.end() - 1;
+		b = &*(borders.end() - 1);
 		_Erase(b);
 		points.erase(p);
 		return 0;
 	}
-	for (p = points.begin() + 1, b = borders.begin() + 1; p != points.end(); ++p, ++b)
+	for (p = (points.begin() + 1), b = &*(borders.begin() + 1); p != (points.end()); ++p, ++b)
 	{
-		if (b == borders.end()) // failed
+		if (b == &*borders.end()) // failed
 			return 1;
 		if ((*p).getID() == id)
 		{
@@ -446,11 +481,16 @@ int Line::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
 	borders.push_back(Borden(x1, y1, x2, y2));
 	return 0;
 }
-int Line::_Erase(vector<Borden>::iterator b)
+int Line::_Erase(Borden* b)
 {
 	//这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
 	//！！！记得擦掉图像
-	borders.erase(b);
+	for (vector<Borden>::iterator it=borders.begin(); it!=borders.end(); ++it)
+		if (&*it == b)
+		{
+			borders.erase(it);
+			return 0;
+		}
 	return 0;
 }
 int Line::_Delete()
@@ -472,10 +512,17 @@ int Button::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Button::Suspend()
 {
-	//变个色
+	color=RGB(138,43,226);//紫色
+    _Draw();
 	return 0;
 }
-int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator& obj) {
+int Button::UnSuspend()
+{
+    color=bColor;//白色
+    _Draw();
+    return 0;
+}
+int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj) {
 	if (btype == Exit)
 		return 0;
 	using std::fstream;
@@ -529,7 +576,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 		stage = Drawing;
 		const int x = mouse.x;
 		objList.push_back(new Point());
-		obj = objList.end() - 1;
+		obj = *(objList.end() - 1);
 		break;
 	}
 	case DrawLine:
@@ -537,7 +584,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 		stage = Drawing;
 		const int x = mouse.x;
 		objList.push_back(dynamic_cast<Point*>(new Line()));
-		obj = objList.end() - 1;
+		obj = *(objList.end() - 1);
 		break;
 	}
 	case DrawPolygen:
@@ -545,7 +592,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, vector<Point*>::iterator&
 		stage = Drawing;
 		const int x = mouse.x;
 		objList.push_back(dynamic_cast<Point*>(new Polygen()));
-		obj = objList.end() - 1;
+		obj = *(objList.end() - 1);
 		break;
 	}
 	default: {
@@ -626,7 +673,7 @@ Line* FindLine(int ID)
 			return dynamic_cast<Line*>(* it);
 	}
 	//failed
-	return dynamic_cast<Line*>(*objList.end());
+	return nullptr;
 }
 Polygen* FindPolygen(int ID)
 {
@@ -637,7 +684,7 @@ Polygen* FindPolygen(int ID)
 			return dynamic_cast<Polygen*>(*it);
 	}
 	//failed
-	return dynamic_cast<Polygen*>(*objList.end());
+	return nullptr;
 }
 
 bool CastWarning(const char* msg)

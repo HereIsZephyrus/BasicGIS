@@ -53,13 +53,13 @@ friend class Button;
 private:
 	MOUSEMSG mouse;
 	Status stage;
-	vector<Point*>::iterator obj;//指向当前响应对象的指针
+	Point* obj;//指向当前响应对象的指针
 protected:
 	Areas DictateArea(const MOUSEMSG&);
-	vector<Point*>::iterator DictateButton(const MOUSEMSG&);
+	Button* DictateButton(const MOUSEMSG&);
 	void UpdateStage(const MOUSEMSG&);
-	vector<Point*>::iterator FocusObjID(const MOUSEMSG &);
-	void TOclick(vector<Point*>::iterator,const MOUSEMSG &,bool);
+	Point* FocusObjID(const int ,const int );
+	void TOclick(Point*,const MOUSEMSG &,bool);
 	int onMenuMsg(const MOUSEMSG &);
 	int onDrawMsg(const MOUSEMSG &);
 public:
@@ -70,7 +70,7 @@ public:
 	Status getStage() { return stage; }
 	void setStage(Status s) { stage = s; }
 	MOUSEMSG &getMouse() { return mouse; }
-	vector<Point*>::iterator& getObj(){ return obj; }
+	Point* getObj(){ return obj; }
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);

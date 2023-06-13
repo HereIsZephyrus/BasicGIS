@@ -20,6 +20,7 @@ int main(int argc,char *argv[]) {
     bool bExit = false;
     while (!bExit)
     {
+        //putpixel(100, 100, RED);
         switch (cmder.getCommand())//异常控制
         {
             case 0: {
@@ -37,7 +38,6 @@ int main(int argc,char *argv[]) {
                 break;
             }
         }
-        system("pause");
     }
 	ShutDown(cmder);
 	return 0;

@@ -35,7 +35,6 @@ Button drawButton2(_LButton, _UButton + (_HButton + _GButton) * 5, bColor,  _WBu
 Button drawButton3(_LButton, _UButton + (_HButton + _GButton) * 6, bColor,  _WButton,_HButton, DrawPolygen);        // 画面按钮
 Button switchButton(_LButton, _UButton + (_HButton + _GButton) * 7, bColor,  _WButton,_HButton, Switch);       // 转换模式按钮
 Button exitButton(_LButton, _UButton + (_HButton + _GButton) * 8, bColor,  _WButton,_HButton, Exit);			// 退出按钮
-constexpr int ButtonNum = 9; // 一共有9个按钮
 
 void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
