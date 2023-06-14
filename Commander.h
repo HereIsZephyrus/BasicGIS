@@ -52,12 +52,12 @@ class Commander {
 friend class Button;
 private:
 	MOUSEMSG mouse;
-	Point* obj;//指向当前响应对象的指针
+	Response* obj;//指向当前响应对象的指针
 protected:
 	Areas DictateArea(const MOUSEMSG&);
 	Button* DictateButton(const MOUSEMSG&);
-	Point* FocusObjID(const int ,const int );
-	void TOclick(Point*,const MOUSEMSG &,bool);
+	Response* FocusObjID(const int ,const int );
+	void TOclick(Response*,const MOUSEMSG &,bool);
 	int onMenuMsg(const MOUSEMSG &);
 	int onDrawMsg(const MOUSEMSG &);
 public:
@@ -67,11 +67,10 @@ public:
 	}
 	int getCommand();
 	MOUSEMSG &getMouse() { return mouse; }
-	Point*& getObj(){ return obj; }
+	Response*& getObj(){ return obj; }
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);
 bool CheckExceed(const Response*,bool );
-bool illegalClick(const MOUSEMSG&);
 
 #endif // !_COMMANDER_H_

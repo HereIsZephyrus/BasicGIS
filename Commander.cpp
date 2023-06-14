@@ -71,7 +71,7 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
 	return nullptr;
 }
 
-void Commander::TOclick(Point* obj,const MOUSEMSG& mouse,bool STATUS)
+void Commander::TOclick(Response* obj,const MOUSEMSG& mouse,bool STATUS)
 {
 	switch (mouse.uMsg)
 	{
@@ -99,9 +99,9 @@ void Commander::TOclick(Point* obj,const MOUSEMSG& mouse,bool STATUS)
 	return;
 }
 
-Point* Commander::FocusObjID(const int x,const int y)
+Response* Commander::FocusObjID(const int x,const int y)
 {
-	for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); it++)
+	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
 		if (typeid(*it) == typeid(Point*)) // 指到点的范围内就可以，注意Point的X和Y是中心点
 			if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
@@ -112,7 +112,6 @@ Point* Commander::FocusObjID(const int x,const int y)
 		if (typeid(*it) == typeid(Polygen*))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
 			if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
 				return *it;
-		// 理论上Button对象不可能出现在Photo中，后期考虑写一个异常
 	}
 	return nullptr;
 }
@@ -129,17 +128,6 @@ bool CheckExceed(const Response* obj, bool style)
 		return false;
 	}
 	//Polygen
-	return false;
-}
-bool illegalClick(const MOUSEMSG& mouse)
-{
-	if (mouse.uMsg == WM_MBUTTONDOWN ||
-		mouse.uMsg == WM_MBUTTONUP ||
-		mouse.uMsg == WM_MBUTTONDBLCLK ||
-		mouse.uMsg == WM_LBUTTONDBLCLK ||
-		mouse.uMsg == WM_RBUTTONDBLCLK ||
-		mouse.uMsg == WM_MOUSEWHEEL)
-		return true;//未定义的输入，不做处理，空转
 	return false;
 }
 int Commander::onMenuMsg(const MOUSEMSG& mouse)
@@ -166,9 +154,10 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 		return 0;
 	}
 	//否则是选择或者拖动模式
-	Point* focusedObj = FocusObjID(mouse.x, mouse.y);
-	if (obj != nullptr && obj != focusedObj)//如果鼠标不在之前focus的对象上
-		obj->UnSuspend();//取消之前的focus
+	Response* focusedObj = FocusObjID(mouse.x, mouse.y);
+	if (obj == nullptr || obj != focusedObj)
+		for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
+			if ((*it)->getFocus())  (*it)->UnSuspend();//如果鼠标不在之前focus的对象上
 	if (focusedObj != nullptr)//如果鼠标在新的对象上
 		focusedObj->Suspend();//focus新的对象
 	obj = focusedObj;//更新focus对象
@@ -199,7 +188,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 	{
 		case Hold: // 空载状态，可能将更新已有矢量状态
 		{
-			Point* obj = FocusObjID(mouse.x,mouse.y);
+			Response* obj = FocusObjID(mouse.x,mouse.y);
 			if (obj == nullptr)
 				break;
 			TOclick(obj, mouse, EXISTED);
@@ -207,7 +196,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 		}
 		case Drag:
 		{
-			Point* obj = FocusObjID(mouse.x,mouse.y);
+			Response* obj = FocusObjID(mouse.x,mouse.y);
 			if (obj == nullptr)
 				break;
 			switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态

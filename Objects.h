@@ -16,7 +16,8 @@ using std::ifstream;
 namespace ColorConst {
 	constexpr char _dx = 3;
 	constexpr char _dy = 3;
-	constexpr char _BOLD_ = 2;
+	constexpr char _BOLD_ = 3;
+	constexpr char _BOLDER_ = 1;
 	constexpr double ALPHA = 1.0;
 }
 using namespace ColorConst;
@@ -52,12 +53,12 @@ public:
 	~Response() {
 		--count;
 	}
-	virtual int _Draw() =0;
-	virtual int _Delete()=0;
-	virtual int ClickLeft(bool,const MOUSEMSG&) = 0;
-    virtual int ClickRight(bool, const MOUSEMSG &) = 0;
-    virtual int Suspend()=0;
-    virtual int UnSuspend()=0;
+	virtual int _Draw() { return 0; };
+	virtual int _Delete() { return 0; };
+	virtual int ClickLeft(bool,const MOUSEMSG&) { return 0; };
+    virtual int ClickRight(bool, const MOUSEMSG &) { return 0; };
+    virtual int Suspend() { return 0; };
+    virtual int UnSuspend() { return 0; };
     void Move(const int& , const int& );
 	int getX() const { return X; }
 	int getY() const { return Y; }
@@ -116,7 +117,7 @@ private:
 protected:
 	virtual int _Delete();
 	virtual void DisplayInfo() const;
-    unsigned int father;//派生类可以修改father！这符合father的含义！
+    unsigned int father;
 public:
     Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
     Point(int X, int Y, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Color, Alpha), type(Type),size(Size) {
@@ -132,14 +133,12 @@ public:
     virtual int Suspend();
     virtual int UnSuspend();
 	virtual int _Draw();
+	void SetFather(unsigned int Fa) { father = Fa; }
 };
 class Borden :public Display
 {
 private:
 	int termX, termY, bold;
-protected:
-	virtual int _Draw();
-    virtual int _Delete();
 public:
 	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY,BLACK),termX(tX),termY(tY),bold(Bold){}
     ~Borden() { _Delete(); }
@@ -148,6 +147,8 @@ public:
 	int getBold() const;
 	inline double CalcX(const int&);
 	virtual void DisplayInfo() const;
+	virtual int _Draw();
+	virtual int _Delete();
 };
 
 class Squareness :public Display
@@ -266,7 +267,7 @@ public:
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
-	int Press(Status&,const MOUSEMSG&, Point*&,bool);
+	int Press(Status&,const MOUSEMSG&, Response*&,bool);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;

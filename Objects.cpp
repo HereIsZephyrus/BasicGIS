@@ -26,7 +26,7 @@
 #include <fstream>
 #include <iostream>
 
-vector<Point*> objList;
+vector<Response*> objList;
 vector<Squareness*> elmList;
 vector<Button*> butList;
 unsigned int Response::count = 0;
@@ -140,15 +140,17 @@ PointType Point::getType() const
 int Point::Suspend()
 {
 	focused = true;
-	size=size*2;
-    _Draw();
+	size= _SIZE_ *1.2;
+	setfillcolor(fColor);
+	fillcircle(X, Y, size);
 	return 0;
 }
 int Point::UnSuspend()
 {
 	focused = false;
-    size = size /2;
-    _Draw();
+    size = _SIZE_;
+	setlinecolor(fColor);
+	setlinestyle(PS_SOLID, _BOLDER_);
     return 0;
 }
 int Point::_Draw()
@@ -157,8 +159,9 @@ int Point::_Draw()
 		return 1;
 	drawed = true;
 	size = _SIZE_;
-	setbkcolor(fColor);
-	fillcircle(X,Y,size);
+	setlinecolor(fColor);
+	setlinestyle(PS_SOLID, _BOLDER_); 
+	circle(X, Y, size-1);
 	return 0;
 }
 int Point::_Delete()
@@ -188,7 +191,9 @@ int Borden::_Draw()
 	if (drawed)//failed
 		return 1;
 	drawed = true;
-	//@@@@@@@@@@@@@HereIsZephyrus画图
+	setlinecolor(fColor); // 将直线的颜色设置为红色
+	setlinestyle(PS_SOLID, _BOLD_); 
+	line(X, Y, termX, termY);
 	return 0;
 }
 int Borden::_Delete()
@@ -216,7 +221,15 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 		DisplayInfo();
 		return 0;
 	}
-	_AddPoint(mouse);
+	MOUSEMSG tmpMsg = mouse;
+	while (!_AddPoint(tmpMsg)) {
+		_Draw();
+		MOUSEMSG Catch=GetMouseMsg();
+		while (Catch.uMsg!=WM_LBUTTONDOWN)
+			Catch= GetMouseMsg();
+		tmpMsg = Catch;
+	}
+	_Draw();
 	return 0;
 }
 int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
@@ -264,13 +277,22 @@ double Polygen::CalcArea()
 }
 int Polygen::_AddPoint(const MOUSEMSG& mouse)
 {
+	if (points.empty()) {
+		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		points.back().SetFather(id);
+		return 0;
+	}
 	vector<Point>::iterator p = points.begin();
 	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
-	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))<_SIZE_)
+	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= _SIZE_*1.3) 
+	{
 		_Bind(points.begin(), points.end() - 1);//手动封闭了
+		return 1;
+	}
 	else
 	{
-		points.push_back(Point(x1,x2,color,alpha, PointType::POLYGEN));
+		points.push_back(Point(x1,y1,color,alpha, PointType::POLYGEN));
+		points.back().SetFather(id);
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -337,8 +359,8 @@ int Polygen::_Erase(Borden* b)
 int Polygen::_Draw()
 {
 	drawed = true;
-	//@@@@@@@@@@HereIsZephyrus画出图像
-	//如果最后一个点不是收尾相连，那么连上
+	for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)	(*p)._Draw();
+	for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	(*b)._Draw();
 	return 0;
 }
 int Polygen::_Delete()
@@ -373,6 +395,15 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 		DisplayInfo();
 		return 0;
 	}
+	MOUSEMSG tmpMsg = mouse;
+	while (!_AddPoint(tmpMsg)) {
+		_Draw();
+		MOUSEMSG Catch = GetMouseMsg();
+		while (Catch.uMsg != WM_LBUTTONDOWN)
+			Catch = GetMouseMsg();
+		tmpMsg = Catch;
+	}
+	_Draw();
 	return 0;
 }
 int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
@@ -426,13 +457,22 @@ void Line::DisplayInfo() const
 }
 int Line::_AddPoint(const MOUSEMSG& mouse)
 {
+	if (points.empty()) {
+		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		points.back().SetFather(id);
+		return 0;
+	}
 	vector<Point>::iterator p = points.begin();
 	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
 	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < _SIZE_)
+	{
 		_Bind(points.begin(), points.end() - 1);
+		return 1;
+	}
 	else
 	{
-		points.push_back(Point(x1, x2, color, alpha, PointType::POLYGEN));
+		points.push_back(Point(x1, y1, color, alpha, PointType::POLYGEN));
+		points.back().SetFather(id);
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -526,7 +566,7 @@ int Button::UnSuspend()
     _Draw();
     return 0;
 }
-int Button::Press(Status& stage, const MOUSEMSG& mouse, Point*& obj,bool Force) {
+int Button::Press(Status& stage, const MOUSEMSG& mouse, Response*& obj,bool Force) {
 	if (mouse.uMsg != WM_LBUTTONUP && Force==false) // 除了左键放开，在工具栏都是点着玩的
 		return 0;
 	if (stage == Drawing) {
@@ -615,24 +655,24 @@ int Button::Press(Status& stage, const MOUSEMSG& mouse, Point*& obj,bool Force) 
 		{
 			stage = Drawing;
 			const int x = mouse.x;
-			objList.push_back(new Point());
-			obj = *(objList.end() - 1);
+			objList.push_back(dynamic_cast<Response*>(new Point()));
+			obj = objList.back();
 			break;
 		}
 		case DrawLine:
 		{
 			stage = Drawing;
 			const int x = mouse.x;
-			objList.push_back(dynamic_cast<Point*>(new Line()));
-			obj = *(objList.end() - 1);
+			objList.push_back(dynamic_cast<Response*>(new Line()));
+			obj = objList.back();
 			break;
 		}
 		case DrawPolygen:
 		{
 			stage = Drawing;
 			const int x = mouse.x;
-			objList.push_back(dynamic_cast<Point*>(new Polygen()));
-			obj = *(objList.end() - 1);
+			objList.push_back(dynamic_cast<Response*>(new Polygen()));
+			obj = objList.back();
 			break;
 		}
 		default: {
@@ -691,7 +731,7 @@ void Button::LoadFromFile(ifstream& fp)
 	objList.clear();
 	elmList.clear();
 	//fp >> objList>>elmList>> butList;
-	for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); ++it)
+	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 		(*it)->_Draw();
 	for (vector<Squareness*>::iterator it = elmList.begin(); it != elmList.end(); ++it)
 		(*it)->_Draw();
@@ -707,7 +747,7 @@ void Button::Setinfo(std::string msg)
 
 Line* FindLine(int ID)
 {
-	for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); ++it)
+	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
 		if (typeid(*it) != typeid(Line))  continue;
 		if ((*it)->getID() == ID)
@@ -718,7 +758,7 @@ Line* FindLine(int ID)
 }
 Polygen* FindPolygen(int ID)
 {
-	for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); ++it)
+	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
 		if (typeid(*it) != typeid(Polygen))  continue;
 		if ((*it)->getID() == ID)

@@ -39,7 +39,7 @@ constexpr COLORREF(fColor) = RGB(210, 105, 30);//点线面的填充颜色
 class Point;
 class Button;
 class Squareness;
-extern vector<Point *> objList;
+extern vector<Response *> objList;
 extern vector<Squareness *> elmList;
 extern vector<Button *> butList;
 
