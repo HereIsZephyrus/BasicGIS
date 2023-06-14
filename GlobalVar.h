@@ -31,7 +31,7 @@ constexpr unsigned int _WMSG = 50;
 constexpr unsigned int _Ellipse=5;
 constexpr unsigned int _FONT = 14;
 
-constexpr int ButtonNum = 9;                    // 一共有9个按钮
+constexpr int ButtonNum = 10;
 constexpr COLORREF(eColor) = RGB(250, 250, 250);//橡皮擦颜色
 constexpr COLORREF(tColor) = RGB(0, 191, 255);//工具栏颜色
 constexpr COLORREF(bColor) = YELLOW;//按钮颜色

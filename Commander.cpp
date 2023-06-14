@@ -65,7 +65,8 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
 	int x = mouse.x,y = mouse.y;
 	for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it) {
 		if ((x >= (*it)->getX() && x <= (*it)->getX() + (*it)->getWidth()) &&
-			(y >= (*it)->getY() && y <= (*it)->getY() + (*it)->getHeight()))
+			(y >= (*it)->getY() && y <= (*it)->getY() + (*it)->getHeight()) &&
+			(*it)->getType()!=Finish)
 			return *it;
 	}
 	return nullptr;
@@ -135,8 +136,10 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 	Button* focusedObj = DictateButton(mouse);
 	if (focusedObj == nullptr) //没有点击在有效对象上
 	{
-		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
+		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it) {
+			if ((*it)->getType() == Finish)	continue;
 			if ((*it)->getFocus())  (*it)->UnSuspend();
+		}
 		return 0;
 	}
 	if (focusedObj->getID() > ButtonNum)//这是一个没有被定义的行为，要报个错

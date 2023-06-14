@@ -59,7 +59,7 @@ public:
     virtual int ClickRight(bool, const MOUSEMSG &) { return 0; };
     virtual int Suspend() { return 0; };
     virtual int UnSuspend() { return 0; };
-    void Move(const int& , const int& );
+	virtual int Move(const int&, const int&) { return 0; };
 	int getX() const { return X; }
 	int getY() const { return Y; }
 	int getID() const { return id; }
@@ -91,6 +91,7 @@ public:
 	int getID() const { return id; }
 	virtual int _Draw() =0;
 	virtual int _Delete()=0;
+	virtual int Move(const int&, const int&) { return 0; };
 	unsigned int getCount() const { return count; };
 };
 
@@ -133,6 +134,7 @@ public:
     virtual int Suspend();
     virtual int UnSuspend();
 	virtual int _Draw();
+	virtual int Move(const int&, const int&);
 	void SetFather(unsigned int Fa) { father = Fa; }
 };
 class Borden :public Display
@@ -149,6 +151,7 @@ public:
 	virtual void DisplayInfo() const;
 	virtual int _Draw();
 	virtual int _Delete();
+	virtual int Move(const int&, const int&);
 };
 
 class Squareness :public Display
@@ -184,6 +187,7 @@ protected:
     virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;
+	virtual int Move(const int&, const int&);
 public:
     Polygen() : Response(), points{}, borders{}, area(0), shownedInfo(false) {}
 	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {
@@ -242,6 +246,7 @@ public:
     virtual int Suspend();
     virtual int UnSuspend();
 	static bool CheckEdges(const int&, const int&, Line*);
+	virtual int Move(const int&, const int&);
 };
 
 class Button :public Response

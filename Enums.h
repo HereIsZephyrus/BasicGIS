@@ -11,6 +11,7 @@ enum ButtonType {
 	DrawPoint,
 	DrawLine,
 	DrawPolygen,
+	Finish,
 	NOEXIST_BUTTON
 };
 enum Status

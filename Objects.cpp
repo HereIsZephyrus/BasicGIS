@@ -31,13 +31,7 @@ vector<Squareness*> elmList;
 vector<Button*> butList;
 unsigned int Response::count = 0;
 unsigned int Display::count = 0;
-void Response::Move(const int& dx, const int& dy)
-{
-    X = X + dx;
-    Y = Y + dy;
-	//对对象进行移动，并用EdgeError类处理非法移动
-	return;
-}
+
 void Text::Print(COLORREF backColor)
 {
 	//删除原有文字
@@ -277,6 +271,11 @@ double Polygen::CalcArea()
 }
 int Polygen::_AddPoint(const MOUSEMSG& mouse)
 {
+	if (mouse.x<_WTool || mouse.x>_Width || mouse.y<0 || mouse.y>_Height)
+	{
+		CastError("请在图框范围内绘制");
+		return 0;
+	}
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
@@ -396,14 +395,27 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 		return 0;
 	}
 	MOUSEMSG tmpMsg = mouse;
+	extern Button finishButton;
 	while (!_AddPoint(tmpMsg)) {
 		_Draw();
+		if (points.size() >= 2) 	finishButton._Draw();
 		MOUSEMSG Catch = GetMouseMsg();
 		while (Catch.uMsg != WM_LBUTTONDOWN)
+		{
+			const int x=Catch.x,y=Catch.y;
+			if ((x >= finishButton.getX() && x <= finishButton.getX() + finishButton.getWidth()) &&
+				(y >= finishButton.getY() && y <= finishButton.getY() + finishButton.getHeight()))
+				if (finishButton.getFocus()==false && points.size() >= 2)
+					finishButton.Suspend();
+			else
+				if (finishButton.getFocus() == true && points.size() >= 2)
+					finishButton.UnSuspend();
 			Catch = GetMouseMsg();
+		}
 		tmpMsg = Catch;
 	}
 	_Draw();
+	finishButton._Delete();
 	return 0;
 }
 int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
@@ -457,24 +469,24 @@ void Line::DisplayInfo() const
 }
 int Line::_AddPoint(const MOUSEMSG& mouse)
 {
+	extern Button finishButton;
+	const int x = mouse.x, y = mouse.y;
+	if (x<_WTool || x>_Width || y<0 || y>_Height)
+	{
+		if ((x >= finishButton.getX() && x <= finishButton.getX() + finishButton.getWidth()) &&
+			(y >= finishButton.getY() && y <= finishButton.getY() + finishButton.getHeight())) 
+			return 1;
+		CastError("请在图框范围内绘制");
+		return 0;
+	}
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
 		return 0;
 	}
-	vector<Point>::iterator p = points.begin();
-	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
-	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < _SIZE_)
-	{
-		_Bind(points.begin(), points.end() - 1);
-		return 1;
-	}
-	else
-	{
-		points.push_back(Point(x1, y1, color, alpha, PointType::POLYGEN));
-		points.back().SetFather(id);
-		_Bind(points.end() - 1, points.end() - 2);
-	}
+	points.push_back(Point(x, y, color, alpha, PointType::POLYGEN));
+	points.back().SetFather(id);
+	_Bind(points.end() - 1, points.end() - 2);
 	return 0;
 }
 int Line::_DeletePoint(const unsigned int& id )
@@ -513,7 +525,8 @@ int Line::_DeletePoint(const unsigned int& id )
 int Line::_Draw()
 {
 	drawed = true;
-	//@@@@@@@@@@HereIsZephyrus画出图像
+	for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)	(*p)._Draw();
+	for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	(*b)._Draw();
 	return 0;
 }
 int Line::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
@@ -692,6 +705,8 @@ int Button::_Draw()
 int Button::_Delete()
 {
 	drawed = false;
+	setfillcolor(tColor);
+	fillroundrect(X-_dx, Y-_dy, X+_dx + width, Y+_dy + height, _Ellipse, _Ellipse);
 	return 0;
 }
 int Button::LoadPhoto(std::wstring& name)
@@ -766,6 +781,49 @@ Polygen* FindPolygen(int ID)
 	}
 	//failed
 	return nullptr;
+}
+
+int Point::Move(const int& dx, const int& dy)
+{
+	if ((X + dx > _Width) || (X + dx < _WTool) || (Y + dy > _Height) || (Y + dy < 0))
+		return 1;
+	X = X + dx;
+	Y = Y + dy;
+	_Draw();
+	//对对象进行移动，并用EdgeError类处理非法移动
+	return 0;
+}
+int Borden::Move(const int& dx, const int& dy)
+{
+	if ((X + dx > _Width) || (X + dx < _WTool) || (Y + dy > _Height) || (Y + dy < 0))
+		return 1;
+	if ((termX + dx > _Width) || (termX + dx < _WTool) || (termY + dy > _Height) || (termY + dy < 0))
+		return 1;
+	X = X + dx;	termX = termX + dx;
+	Y = Y + dy;	termY = termY + dy;
+	_Draw();
+	//对对象进行移动，并用EdgeError类处理非法移动
+	return 0;
+}
+int Polygen::Move(const int& dx, const int& dy)
+{
+	for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+		(*it).Move(dx, dy);
+	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
+		(*it).Move(dx, dy);
+	_Draw();
+	//对对象进行移动，并用EdgeError类处理非法移动
+	return 0;
+}
+int Line::Move(const int& dx, const int& dy)
+{
+	for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+		(*it).Move(dx, dy);
+	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
+		(*it).Move(dx, dy);
+	_Draw();
+	//对对象进行移动，并用EdgeError类处理非法移动
+	return 0;
 }
 
 LPTSTR CharToLPTSTR(const char* str)

@@ -35,7 +35,7 @@ Button drawButton2(_LButton, _UButton + (_HButton + _GButton) * 5, bColor,  _WBu
 Button drawButton3(_LButton, _UButton + (_HButton + _GButton) * 6, bColor,  _WButton,_HButton, DrawPolygen);        // 画面按钮
 Button switchButton(_LButton, _UButton + (_HButton + _GButton) * 7, bColor,  _WButton,_HButton, Switch);       // 转换模式按钮
 Button exitButton(_LButton, _UButton + (_HButton + _GButton) * 8, bColor,  _WButton,_HButton, Exit);			// 退出按钮
-
+Button finishButton(_LButton, _UButton + (_HButton + _GButton) * 9, bColor, _WButton, _HButton, Finish);
 void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
     {
@@ -63,6 +63,8 @@ void Initialize(Commander& cmder) {
         butList.push_back(&switchButton);        switchButton._Draw();
         exitButton.Setinfo(R"(退出程序)");
         butList.push_back(&exitButton);        exitButton._Draw();
+        finishButton.Setinfo(R"(结束绘制)");
+        butList.push_back(&finishButton);
     }
     loadButton.Press(cmder.stage, cmder.getMouse(), cmder.getObj(),true);//加载一张图先
     setbkmode(TRANSPARENT);                                              // 设置背景模式为透明
