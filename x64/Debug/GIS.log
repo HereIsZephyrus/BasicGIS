@@ -1,5 +1,2 @@
-﻿  Commander.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(38,70): error C2440: “static_cast”: 无法从“short”转换为“LPCWSTR”
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(38,42): message : 从整型类型转换为指针类型需要 reinterpret_cast、C 样式转换或带圆括号的函数样式强制转换
-C:\Users\Administrator\GitHub\BasicGIS\Commander.cpp(38,77): error C2660: “MessageBoxW”: 函数不接受 3 个参数
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winuser.h(9161,1): message : 参见“MessageBoxW”的声明
+﻿  Solution.cpp
+  GIS.vcxproj -> C:\Users\Administrator\GitHub\BasicGIS\x64\Debug\GIS.exe

@@ -31,11 +31,6 @@ vector<Squareness*> elmList;
 vector<Button*> butList;
 unsigned int Response::count = 0;
 unsigned int Display::count = 0;
-int Response::getX() const              {return X;}
-int Response::getY() const              {return Y;}
-int Response::getID() const             {return id;}
-double Response::getColor() const     {return color;}
-double Response::getAlpha() const { return alpha; }
 void Response::Move(const int& dx, const int& dy)
 {
     X = X + dx;
@@ -82,6 +77,7 @@ void Squareness::AddText(Text texts)
 }
 int Squareness::_Draw()
 {
+	drawed = true;
 	int x = X,y=Y;
 	setfillcolor(color);
 	fillrectangle(X,Y,X+width,Y+height);
@@ -95,6 +91,7 @@ int Squareness::_Draw()
 }
 int Squareness::_Delete()
 {
+	drawed = false;
 	return 0;
 	//@@@@@@@@@@@@@@@HereIsZephyrus擦掉图像
 }
@@ -148,12 +145,14 @@ PointType Point::getType() const
 }
 int Point::Suspend()
 {
+	focused = true;
 	size=size*2;
     _Draw();
 	return 0;
 }
 int Point::UnSuspend()
 {
+	focused = false;
     size = size /2;
     _Draw();
     return 0;
@@ -236,6 +235,7 @@ int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Polygen::Suspend()
 {
+	focused = true;
 	//填充一个多边形出来，透明度低一些
 	const size_t num = points.size();
     if (num < 3) return 1;//failed
@@ -253,6 +253,7 @@ int Polygen::Suspend()
 }
 int Polygen::UnSuspend()
 {
+	focused = false;
     //擦掉填充的多边形
     cleardevice();
     return 0;
@@ -340,12 +341,14 @@ int Polygen::_Erase(Borden* b)
 }
 int Polygen::_Draw()
 {
+	drawed = true;
 	//@@@@@@@@@@HereIsZephyrus画出图像
 	//如果最后一个点不是收尾相连，那么连上
 	return 0;
 }
 int Polygen::_Delete()
 {
+	drawed = false;
 	return 0;
 }
 int Polygen::CalcLine(const int& x, const int& y, Polygen* obj)
@@ -387,11 +390,13 @@ int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Line::Suspend()
 {
+	focused = true;
 	//把线变个色
 	return 0;
 }
 int Line::UnSuspend()
 {
+	focused = false;
     //把线变回来
     return 0;
 }
@@ -472,6 +477,7 @@ int Line::_DeletePoint(const unsigned int& id )
 }
 int Line::_Draw()
 {
+	drawed = true;
 	//@@@@@@@@@@HereIsZephyrus画出图像
 	return 0;
 }
@@ -495,6 +501,7 @@ int Line::_Erase(Borden* b)
 }
 int Line::_Delete()
 {
+	drawed = false;
 	//@@@@@@@@@@HereIsZephyrus擦掉图像
 	return 0;
 }
@@ -512,31 +519,37 @@ int Button::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Button::Suspend()
 {
+	focused = true;
 	color=RGB(138,43,226);//紫色
     _Draw();
 	return 0;
 }
 int Button::UnSuspend()
 {
+	focused = false;
     color=bColor;//白色
     _Draw();
     return 0;
 }
-int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj) {
-	if (btype == Exit)
+int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj,bool Force) {
+	if (mouse.uMsg != WM_LBUTTONUP && Force==false) // 除了左键放开，在工具栏都是点着玩的
 		return 0;
+	if (btype == Exit)
+		return 1;
 	using std::fstream;
 	using std::ios_base;
 	switch (btype)
 	{
 	case Load:
 	{
+		extern Squareness map;
+		map._Draw();
 		wchar_t buffer[100] = { 0 };
 		InputBox(buffer, 100, L"请输入图片路径与名称");
 		std::wstring photoName=buffer;
 		if (LoadPhoto(photoName))
 			//fail to load
-			return 1;
+			return -1;
 		break;
 	}
 	case New:
@@ -603,6 +616,7 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj) {
 }
 int Button::_Draw()
 {
+	drawed = true;
 	setfillcolor(color);
 	fillroundrect(X, Y, X + width, Y + height, _Ellipse, _Ellipse);
 	info.Print(color);
@@ -610,6 +624,7 @@ int Button::_Draw()
 }
 int Button::_Delete()
 {
+	drawed = false;
 	return 0;
 }
 int Button::LoadPhoto(std::wstring& name)

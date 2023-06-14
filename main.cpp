@@ -21,6 +21,7 @@ int main(int argc,char *argv[]) {
     while (!bExit)
     {
         //putpixel(100, 100, RED);
+        FlushMouseMsgBuffer();
         switch (cmder.getCommand())//异常控制
         {
             case 0: {
@@ -28,7 +29,11 @@ int main(int argc,char *argv[]) {
                 break;
             }
             case -1: {
-                ShutDown(cmder);
+                bExit = true;
+                //failed
+                break;
+            }
+            case 1: {//退出按钮
                 bExit = true;
                 //failed
                 break;

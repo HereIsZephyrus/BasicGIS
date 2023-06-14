@@ -33,7 +33,7 @@ protected:
 	int X, Y;
 	COLORREF color;
 	double alpha;
-    bool drawed;
+    bool drawed, focused;
 	unsigned int id;
 	static unsigned int count;
 public:
@@ -44,6 +44,7 @@ public:
 	Response(int x, int y, COLORREF Color, double Alpha) :X(x), Y(y), color(Color), alpha(Alpha) {
 		id=++count;
         drawed=false;
+		focused = false;
 	}
 	~Response() {
 		--count;
@@ -55,12 +56,14 @@ public:
     virtual int Suspend()=0;
     virtual int UnSuspend()=0;
     void Move(const int& , const int& );
-	int getX() const;
-	int getY() const;
-	int getID() const;
+	int getX() const { return X; }
+	int getY() const { return Y; }
+	int getID() const { return id; }
+	bool getDraw() const { return drawed; }
+	bool getFocus() const { return focused; }
+	double getColor() const { return color; }
+	double getAlpha() const { return alpha; }
 	unsigned int getCount() const { return count; };
-	double getColor() const;
-	double getAlpha() const;
 };
 class Display
 {
@@ -113,7 +116,11 @@ protected:
     unsigned int father;//派生类可以修改father！这符合father的含义！
 public:
     Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
-    Point(int X, int Y, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Color, Alpha), type(Type),size(Size) {father=id;}
+    Point(int X, int Y, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Color, Alpha), type(Type),size(Size) {
+		father=id;
+		drawed = false;
+		focused = false;
+	}
     ~Point() { _Delete(); }
     int getSize() const;
 	PointType getType() const;
@@ -175,7 +182,10 @@ protected:
     virtual void DisplayInfo() const;
 public:
     Polygen() : Response(), points{}, borders{}, area(0), shownedInfo(false) {}
-	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {}
+	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {
+		drawed = false;
+		focused = false;
+	}
 	~Polygen() {
     for (auto i = points.begin(); i != points.end(); ++i)
         i->~Point();
@@ -210,7 +220,10 @@ protected:
 	virtual void DisplayInfo() const;
 public:
     Line() : Response(), points{}, borders{}, length(0), shownedInfo(false) {}
-	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {}
+	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {
+		drawed = false;
+		focused = false;
+	}
 	~Line() {
     for (auto i = points.begin(); i != points.end(); ++i)
         i->~Point();
@@ -239,12 +252,15 @@ protected:
 	void SaveToFile(fstream&);
 	void LoadFromFile(fstream&);
 public:
-	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color, ALPHA), width(w), height(h), btype{ b } {};
+	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color, ALPHA), width(w), height(h), btype{ b } {
+		drawed = false;
+		focused = false;
+	};
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
-	int Press(Status,const MOUSEMSG&, Point*);
+	int Press(Status,const MOUSEMSG&, Point*,bool);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;

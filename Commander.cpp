@@ -25,30 +25,29 @@
 
 int Commander::getCommand()
 {
-    mouse = GetMouseMsg();
     if (MouseHit())
     {
-        if (mouse.x>_Width || mouse.y>_Height)
-            MessageBox(NULL, L"???", L"???", NULL);
-        if (illegalClick(mouse))
-            return 0;
+        mouse = GetMouseMsg();
+        //if (illegalClick(mouse))    return 0;!!会影响cmder状态的回位！
+       //MessageBox(NULL, L"Area", L"Area", NULL);
 		switch (static_cast<int>(DictateArea(mouse)))
 		{
 		case static_cast<int>(Toolbar) : {//理论上在工具栏中可操作对象是按钮为充分必要的
-            MessageBox(NULL, L"ToolBar", L"ToolBar", NULL);
+            //MessageBox(NULL, L"ToolBar", L"ToolBar", NULL);
             int CMD=onMenuMsg(mouse);
-            if (CMD == 1)   {return 0;}
+            if (CMD == 1)   return 1;//退出按钮
 			break;
 		}
 		case static_cast<int>(Photo): {
-            MessageBox(NULL, L"Photo", L"Photo", NULL);
+            //MessageBox(NULL, L"Photo", L"Photo", NULL);
             onDrawMsg(mouse);
             break;
         }
 		default://out_of_range
 			break;
 		}
-        UpdateStage(mouse);//更新鼠标对象状态
+        //UpdateStage(mouse);//更新鼠标对象状态
+        //不对需要修改，应当绑定在行为上与行为同步改变符合自觉
     }
     return 0;
 }
@@ -70,14 +69,14 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
 {
     int x = mouse.x,y = mouse.y;
     if (x<_LButton || x>_LButton+_WButton)//所有的鼠标都是对齐的，
-        return *butList.end();
+        return nullptr;
     if (y >= _UButton && y <= _UButton + _HButton)
         //加载底图
         return *butList.begin();
     if (y >= _UButton + (_HButton + _GButton) && y <= _UButton + _HButton + (_HButton + _GButton))
         //新建矢量
         return *(butList.begin() + 1);
-    if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton))
+    if (y >= _UButton + (_HButton + _GButton) * 2 && y <= _UButton + _HButton + (_HButton + _GButton)*2 )
         //加载矢量
         return *(butList.begin() + 2);
     if (y >= _UButton + (_HButton + _GButton) * 3 && y <= _UButton + _HButton + (_HButton + _GButton) * 3)
@@ -98,7 +97,7 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
     if (y >= _UButton + (_HButton + _GButton) * 8 && y <= _UButton + _HButton + (_HButton + _GButton) * 8)
         //退出
         return *(butList.begin() + 8);
-    return *butList.end();
+    return nullptr;
 }
 
 void Commander::UpdateStage(const MOUSEMSG &mouse)
@@ -201,20 +200,22 @@ bool illegalClick(const MOUSEMSG& mouse)
 }
 int Commander::onMenuMsg(const MOUSEMSG& mouse)
 {
-    if (mouse.uMsg != WM_LBUTTONUP) // 除了左键放开，在工具栏都是点着玩的
-        return 0;
     Button* focusedObj = DictateButton(mouse);
-    if (focusedObj == * butList.end())
-        return 0;//没有点击在有效对象上
+    
+    if (focusedObj == nullptr) //没有点击在有效对象上
+    {
+        for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
+            if ((*it)->getFocus())  (*it)->UnSuspend();
+        return 0;
+    }
     if (focusedObj->getID() > ButtonNum)//这是一个没有被定义的行为，要报个错
         return -1;
+    if (!focusedObj->getFocus())//意味着有可能有其他对象没有被unfocus
+        for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
+            if ((*it)->getFocus())  (*it)->UnSuspend();
     focusedObj->Suspend();
-    if (!focusedObj->Press(stage, mouse, obj))
-    {
-        focusedObj->UnSuspend();
-        return 1;
-    }
-    return 0;
+    //if (mouse.uMsg == WM_MOUSEMOVE && stage == Hold)    return 0;
+    return focusedObj->Press(stage, mouse, obj, false);//Press返回1为Exit，不返回1则不退出
 }
 int Commander::onDrawMsg(const MOUSEMSG& mouse)
 {

@@ -40,8 +40,8 @@ void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
     {
         toolbar.AddText(Text((_WTool-_FONT*3)/2, 10, "工具栏", _SIZE_, RGB(75, 0, 130)));
-        elmList.push_back(&toolbar);     toolbar._Draw();
-        elmList.push_back(&map);          map._Draw();
+        toolbar._Draw();
+        map._Draw();
     }
     {
         using std::string;
@@ -49,7 +49,7 @@ void Initialize(Commander& cmder) {
         butList.push_back(&loadButton);        loadButton._Draw();
         newButton.Addinfo(R"(新建矢量)");
         butList.push_back(&newButton);        newButton._Draw();
-        openButton.Addinfo(R"(打开矢量)");
+        openButton.Addinfo(R"(加载矢量)");
         butList.push_back(&openButton);        openButton._Draw();
         saveButton.Addinfo(R"(保存矢量)");
         butList.push_back(&saveButton);        saveButton._Draw();
@@ -64,15 +64,14 @@ void Initialize(Commander& cmder) {
         exitButton.Addinfo(R"(退出程序)");
         butList.push_back(&exitButton);        exitButton._Draw();
     }
-    loadButton.Press(cmder.getStage(), cmder.getMouse(), cmder.getObj());//加载一张图先
+    loadButton.Press(cmder.getStage(), cmder.getMouse(), cmder.getObj(),true);//加载一张图先
     setbkmode(TRANSPARENT);                                              // 设置背景模式为透明
     setbkcolor(eColor);                                    // 设置背景色为白色
     return;
 }
 void ShutDown(Commander& cmder) {
-    for (auto& i : objList)     delete i;
-    for (auto& i : elmList)     delete i;
-    for (auto& i : butList)     delete i;
+    for (auto it = objList.begin(); it != objList.end(); ++it)         delete* it; // 手动释放对象的内存
+    for (auto it = elmList.begin(); it != elmList.end(); ++it)        delete* it; // 手动释放对象的内存
     objList.clear();
     elmList.clear();
     butList.clear();
