@@ -17,12 +17,12 @@ namespace ColorConst {
 	constexpr char _dx = 3;
 	constexpr char _dy = 3;
 	constexpr char _BOLD_ = 2;
-	constexpr char _SIZE_ = 10;
 	constexpr double ALPHA = 1.0;
 }
 using namespace ColorConst;
 constexpr bool DRAWING = false;
 constexpr bool EXISTED = true;
+constexpr char _SIZE_ = 5;
 static LPTSTR filename;
 
 
@@ -261,11 +261,12 @@ public:
 	};
 	const int getWidth() {		return width; }
 	const int getHeight() {	return height;}
+	ButtonType getType() { return btype; }
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
-	int Press(Status&,const MOUSEMSG&, Point*,bool);
+	int Press(Status&,const MOUSEMSG&, Point*&,bool);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;

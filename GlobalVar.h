@@ -30,11 +30,12 @@ constexpr unsigned int _GButton = 15; // 按钮上下排列间隔
 constexpr unsigned int _WMSG = 50;
 constexpr unsigned int _Ellipse=5;
 constexpr unsigned int _FONT = 14;
+
 constexpr int ButtonNum = 9;                    // 一共有9个按钮
 constexpr COLORREF(eColor) = RGB(250, 250, 250);//橡皮擦颜色
 constexpr COLORREF(tColor) = RGB(0, 191, 255);//工具栏颜色
 constexpr COLORREF(bColor) = YELLOW;//按钮颜色
-constexpr COLORREF(fColor) = RGB(210, 105, 30);//填充颜色
+constexpr COLORREF(fColor) = RGB(210, 105, 30);//点线面的填充颜色
 class Point;
 class Button;
 class Squareness;

@@ -67,7 +67,7 @@ public:
 	}
 	int getCommand();
 	MOUSEMSG &getMouse() { return mouse; }
-	Point* getObj(){ return obj; }
+	Point*& getObj(){ return obj; }
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);

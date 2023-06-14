@@ -21,6 +21,7 @@
 #include "Commander.h"
 #include "Objects.h"
 #include "GlobalVar.h"
+#include "Errors.h"
 #include<cmath>
 
 int Commander::getCommand()
@@ -77,6 +78,14 @@ void Commander::TOclick(Point* obj,const MOUSEMSG& mouse,bool STATUS)
 	case WM_LBUTTONDOWN:
 	{
 		obj->ClickLeft(STATUS, mouse);
+		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
+			if ((*it)->getType() == Switch)
+			{
+				Button* res = *it;
+				res->Setinfo("选择模式"); res->_Draw();
+				stage = Hold;
+				break;
+			}
 		break;
 	}
 	case WM_RBUTTONDOWN:
@@ -152,6 +161,11 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 }
 int Commander::onDrawMsg(const MOUSEMSG& mouse)
 {
+	if (stage == Drawing) {
+		TOclick(obj, mouse, DRAWING);
+		return 0;
+	}
+	//否则是选择或者拖动模式
 	Point* focusedObj = FocusObjID(mouse.x, mouse.y);
 	if (obj != nullptr && obj != focusedObj)//如果鼠标不在之前focus的对象上
 		obj->UnSuspend();//取消之前的focus
@@ -183,49 +197,39 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 	//剩下的鼠标输入状态只剩下左键按下，右键按下，鼠标移动
 	switch (stage)
 	{
-	case Drawing: // 在绘制状态下，鼠标左键按下时，响应对象的ClickLeft()函数用以新建对象
-	{
-		TOclick(obj, mouse, DRAWING);
-		break;
-	}
-	case Hold: // 空载状态，可能将更新已有矢量状态
-	{
-		Point* obj = FocusObjID(mouse.x,mouse.y);
-		if (obj == nullptr)
-			break;
-		TOclick(obj, mouse, EXISTED);
-		break;
-	}
-	case Drag:
-	{
-		Point* obj = FocusObjID(mouse.x,mouse.y);
-		if (obj == nullptr)
-			break;
-		switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态
+		case Hold: // 空载状态，可能将更新已有矢量状态
 		{
-		case WM_LBUTTONUP:
-		{
-			//开始拖动
+			Point* obj = FocusObjID(mouse.x,mouse.y);
+			if (obj == nullptr)
+				break;
+			TOclick(obj, mouse, EXISTED);
 			break;
 		}
-		case WM_LBUTTONDOWN://结束拖动
+		case Drag:
 		{
-			//obj->Move(mouse.x - obj->getX(), mouse.y - obj->getY());
+			Point* obj = FocusObjID(mouse.x,mouse.y);
+			if (obj == nullptr)
+				break;
+			switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态
+			{
+			case WM_LBUTTONUP:
+			{
+				//开始拖动
+				break;
+			}
+			case WM_LBUTTONDOWN://结束拖动
+			{
+				//obj->Move(mouse.x - obj->getX(), mouse.y - obj->getY());
+				break;
+			}
+			case WM_MOUSEMOVE:
+			{
+				//拖动过程中，有精力写个异或线，先空着
+				break;
+			}
+			}
 			break;
 		}
-		case WM_MOUSEMOVE:
-		{
-			//拖动过程中，有精力写个异或线，先空着
-			break;
-		}
-		}
-		break;
-	}
-	case Clicking:
-	{
-		//感觉没啥好写， 现在也没想到解决鼠标响应冲突的办法
-		break;
-	}
 	}
 	return 0;
 }

@@ -156,9 +156,9 @@ int Point::_Draw()
 	if (drawed)//failed
 		return 1;
 	drawed = true;
-	color = 1;  size = _SIZE_;
+	size = _SIZE_;
+	setbkcolor(fColor);
 	fillcircle(X,Y,size);
-	//@@@@@@@@@@@HereIsZephyrus画图
 	return 0;
 }
 int Point::_Delete()
@@ -173,7 +173,7 @@ int Point::_Delete()
 void Point::DisplayInfo() const
 {
 	const int n = 2;
-	Squareness Msg(X+_dx,Y+_dy,_WMSG,_SIZE_*n);
+	Squareness Msg(X+_dx,Y+_dy,_WMSG,_FONT*n);
 	{//n
 		Msg.AddText(Text());
 		Msg.AddText(Text());
@@ -279,7 +279,7 @@ int Polygen::_DeletePoint(const unsigned int& id)
 {
 	//从队列中删除一个点，然后重新绑定边
 	vector<Point>::iterator p = points.begin();
-	Borden* b;
+	Borden* b = &*borders.begin();
 	if ((*p).getID() == id)
 	{
 		b=&*borders.begin();
@@ -307,7 +307,8 @@ int Polygen::_DeletePoint(const unsigned int& id)
 			return 1;
 		if ((*p).getID() == id)
 		{
-			_Erase(b);_Erase(b-1);
+			_Erase(b);
+			_Erase(b-1);
 			_Bind(p-1, p+1);//这里不会越界，因为上面的if已经判断过了（挺妙的）
 			points.erase(p);
 			break;
@@ -525,9 +526,13 @@ int Button::UnSuspend()
     _Draw();
     return 0;
 }
-int Button::Press(Status& stage, const MOUSEMSG& mouse, Point* obj,bool Force) {
+int Button::Press(Status& stage, const MOUSEMSG& mouse, Point*& obj,bool Force) {
 	if (mouse.uMsg != WM_LBUTTONUP && Force==false) // 除了左键放开，在工具栏都是点着玩的
 		return 0;
+	if (stage == Drawing) {
+		CastError("无效绘制！请先完成绘制");
+		return 0;
+	}
 	if (btype == Exit)
 		return 1;
 	using std::ofstream;

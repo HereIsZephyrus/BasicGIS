@@ -18,7 +18,6 @@ enum Status
 	Hold,
 	Drawing,
 	Drag,
-	Clicking,
 	NOEXIST_STATUS
 };
 enum Areas

@@ -39,7 +39,7 @@ Button exitButton(_LButton, _UButton + (_HButton + _GButton) * 8, bColor,  _WBut
 void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
     {
-        toolbar.AddText(Text((_WTool-_FONT*3)/2, 10, "工具栏", _SIZE_, RGB(75, 0, 130)));
+        toolbar.AddText(Text((_WTool-_FONT*3)/2, 10, "工具栏", _FONT, RGB(75, 0, 130)));
         toolbar._Draw();
         map._Draw();
     }
