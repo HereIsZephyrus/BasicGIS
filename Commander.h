@@ -52,23 +52,20 @@ class Commander {
 friend class Button;
 private:
 	MOUSEMSG mouse;
-	Status stage;
 	Point* obj;//指向当前响应对象的指针
 protected:
 	Areas DictateArea(const MOUSEMSG&);
 	Button* DictateButton(const MOUSEMSG&);
-	void UpdateStage(const MOUSEMSG&);
 	Point* FocusObjID(const int ,const int );
 	void TOclick(Point*,const MOUSEMSG &,bool);
 	int onMenuMsg(const MOUSEMSG &);
 	int onDrawMsg(const MOUSEMSG &);
 public:
+	Status stage;
 	Commander() :mouse{}, stage{ Hold }{
 		FlushMouseMsgBuffer();
 	}
 	int getCommand();
-	Status getStage() { return stage; }
-	void setStage(Status s) { stage = s; }
 	MOUSEMSG &getMouse() { return mouse; }
 	Point* getObj(){ return obj; }
 };

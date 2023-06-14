@@ -28,26 +28,20 @@ int Commander::getCommand()
 	if (MouseHit())
 	{
 		mouse = GetMouseMsg();
-		//if (illegalClick(mouse))    return 0;!!会影响cmder状态的回位！
-	   //MessageBox(NULL, L"Area", L"Area", NULL);
 		switch (static_cast<int>(DictateArea(mouse)))
 		{
 		case static_cast<int>(Toolbar) : {//理论上在工具栏中可操作对象是按钮为充分必要的
-			//MessageBox(NULL, L"ToolBar", L"ToolBar", NULL);
 			int CMD=onMenuMsg(mouse);
 			if (CMD == 1)   return 1;//退出按钮
 			break;
 		}
 		case static_cast<int>(Photo): {
-			//MessageBox(NULL, L"Photo", L"Photo", NULL);
 			onDrawMsg(mouse);
 			break;
 		}
 		default://out_of_range
 			break;
 		}
-		//UpdateStage(mouse);//更新鼠标对象状态
-		//不对需要修改，应当绑定在行为上与行为同步改变符合自觉
 	}
 	return 0;
 }
@@ -74,41 +68,6 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
 			return *it;
 	}
 	return nullptr;
-}
-
-void Commander::UpdateStage(const MOUSEMSG &mouse)
-{
-	switch (mouse.uMsg)
-	{
-	case WM_LBUTTONDOWN:
-	{
-		stage = Clicking;
-		break;
-	}
-	case WM_RBUTTONDOWN:
-	{
-		stage = Clicking;
-		break;
-	}
-	case WM_LBUTTONUP:
-	{
-		stage = Hold;
-		break;
-	}
-	case WM_RBUTTONUP:
-	{
-		stage = Hold;
-		break;
-	}
-	case WM_MOUSEMOVE: // 鼠标在移动时可能为绘制、移动和空载三种情况，但是没有额外动作
-	{
-		break;
-	}
-	default:
-		// failed
-		break;
-	}
-	return;
 }
 
 void Commander::TOclick(Point* obj,const MOUSEMSG& mouse,bool STATUS)
@@ -177,7 +136,6 @@ bool illegalClick(const MOUSEMSG& mouse)
 int Commander::onMenuMsg(const MOUSEMSG& mouse)
 {
 	Button* focusedObj = DictateButton(mouse);
-	
 	if (focusedObj == nullptr) //没有点击在有效对象上
 	{
 		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
@@ -186,11 +144,10 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 	}
 	if (focusedObj->getID() > ButtonNum)//这是一个没有被定义的行为，要报个错
 		return -1;
-	if (!focusedObj->getFocus())//意味着有可能有其他对象没有被unfocus
+	if (focusedObj->getFocus()==false)//意味着有可能有其他对象没有被unfocus
 		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
 			if ((*it)->getFocus())  (*it)->UnSuspend();
 	focusedObj->Suspend();
-	//if (mouse.uMsg == WM_MOUSEMOVE && stage == Hold)    return 0;
 	return focusedObj->Press(stage, mouse, obj, false);//Press返回1为Exit，不返回1则不退出
 }
 int Commander::onDrawMsg(const MOUSEMSG& mouse)
@@ -208,7 +165,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 		if (stage != Drag)  return 0;
 		else
 		{
-			stage = Hold;//结束拖动
+			//stage = Hold;//结束拖动
 			if (typeid(*obj) == typeid(Line))
 				if (!CheckExceed(obj, 0))
 				{

@@ -20,8 +20,8 @@ int main(int argc,char *argv[]) {
     bool bExit = false;
     while (!bExit)
     {
-        //putpixel(100, 100, RED);
-        FlushMouseMsgBuffer();
+        //Flush太狠了没必要
+        //FlushMouseMsgBuffer();
         switch (cmder.getCommand())//异常控制
         {
             case 0: {

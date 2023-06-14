@@ -11,6 +11,8 @@ using std::string;
 using std::wstring;
 using std::vector;
 using std::fstream;
+using std::ofstream;
+using std::ifstream;
 namespace ColorConst {
 	constexpr char _dx = 3;
 	constexpr char _dy = 3;
@@ -250,8 +252,8 @@ private:
 	ButtonType btype;
 protected:
 	int LoadPhoto(wstring&);
-	void SaveToFile(fstream&);
-	void LoadFromFile(fstream&);
+	void SaveToFile(ofstream&);
+	void LoadFromFile(ifstream&);
 public:
 	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color, ALPHA), width(w), height(h), btype{ b } {
 		drawed = false;
@@ -263,13 +265,15 @@ public:
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
-	int Press(Status,const MOUSEMSG&, Point*,bool);
+	int Press(Status&,const MOUSEMSG&, Point*,bool);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;
-	void Addinfo(string);
+	void Setinfo(string);
 };
 
 Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
+LPTSTR CharToLPTSTR(const char*);
+char* LPTSTRToChar(LPTSTR str);
 #endif // !_OBJECTS_H_

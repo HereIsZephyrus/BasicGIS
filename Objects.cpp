@@ -18,9 +18,11 @@
  * @
  * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
  */
+#define _CRT_SECURE_NO_WARNINGS//!!!!!!!!!!!!!!
 #include "Objects.h"
 #include "GlobalVar.h"
 #include "Errors.h"
+#include <windows.h>
 #include <fstream>
 #include <iostream>
 
@@ -38,6 +40,9 @@ void Response::Move(const int& dx, const int& dy)
 }
 void Text::Print(COLORREF backColor)
 {
+	//删除原有文字
+	setbkcolor(BLACK); // 将背景色设置为黑色
+	outtextxy(X, Y, L" "); // 在指定位置输出一个空格
 	int len = MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, NULL, 0);
 	wchar_t* wstr = new wchar_t[len];
 	MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, wstr, len);
@@ -520,90 +525,114 @@ int Button::UnSuspend()
     _Draw();
     return 0;
 }
-int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj,bool Force) {
+int Button::Press(Status& stage, const MOUSEMSG& mouse, Point* obj,bool Force) {
 	if (mouse.uMsg != WM_LBUTTONUP && Force==false) // 除了左键放开，在工具栏都是点着玩的
 		return 0;
 	if (btype == Exit)
 		return 1;
-	using std::fstream;
+	using std::ofstream;
+	using std::ifstream;
 	using std::ios_base;
 	switch (btype)
 	{
-	case Load:
-	{
-		extern Squareness map;
-		map._Draw();
-		wchar_t buffer[100] = { 0 };
-		InputBox(buffer, 100, L"请输入图片路径与名称");
-		std::wstring photoName = buffer;
-		while (LoadPhoto(photoName)) {
-			//fail to load
-			memset(buffer, 0, sizeof(buffer));
-			CastError("请输入正确的文件路径和文件名！");
+		case Load:
+		{
+			extern Squareness map;
+			map._Draw();
+			wchar_t buffer[100] = { 0 };
 			InputBox(buffer, 100, L"请输入图片路径与名称");
-			photoName = buffer;
+			std::wstring photoName = buffer;
+			while (LoadPhoto(photoName)) {
+				//fail to load
+				memset(buffer, 0, sizeof(buffer));
+				CastError("请输入正确的文件路径和文件名！");
+				InputBox(buffer, 100, L"请输入图片路径与名称");
+				photoName = buffer;
+			}
+			break;
 		}
-		break;
-	}
-	case New:
-	{
-		InputBox(filename, 50, L"请输入文件名称（默认保存在程序所在文件夹内");
-		fstream fp;
-		fp.open(filename, ios_base::out);
-		SaveToFile(fp);
-		fp.close();
-		break;
-	}
-	case Open:
-	{
-		InputBox(filename, 50, L"请输入文件绝对路径与完整名称");
-		fstream fp;
-		fp.open(filename, std::ios_base::in);
-		LoadFromFile(fp);
-		fp.close();
-		break;
-	}
-	case Save:
-	{
-		fstream fp;
-		fp.open(filename, ios_base::out);
-		SaveToFile(fp);
-		fp.close();
-		break;
-	}
-	case Switch:
-	{
-		if (stage == Drag)    stage = Hold;
-		if (stage == Hold)    stage = Drag;
-		break;
-	}
-	case DrawPoint:
-	{
-		stage = Drawing;
-		const int x = mouse.x;
-		objList.push_back(new Point());
-		obj = *(objList.end() - 1);
-		break;
-	}
-	case DrawLine:
-	{
-		stage = Drawing;
-		const int x = mouse.x;
-		objList.push_back(dynamic_cast<Point*>(new Line()));
-		obj = *(objList.end() - 1);
-		break;
-	}
-	case DrawPolygen:
-	{
-		stage = Drawing;
-		const int x = mouse.x;
-		objList.push_back(dynamic_cast<Point*>(new Polygen()));
-		obj = *(objList.end() - 1);
-		break;
-	}
-	default: {
-		break;
-	}
+		case New:
+		{
+			InputBox(filename, 50, L"请输入文件名称（不包含后缀名）");
+			filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
+			ofstream fp;
+			fp.open(filename);
+			SaveToFile(fp);
+			fp.close();
+			break;
+		}
+		case Open:
+		{
+			InputBox(filename, 50, L"请输入文件名称(不包含后缀名)");
+			filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
+			ifstream fp;
+			fp.open(filename);
+			while (fp.is_open() == false) {
+				MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
+				InputBox(filename, 50, L"请输入文件名称（不包含后缀名）");
+				filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
+				fp.open(filename);
+			}
+			LoadFromFile(fp);
+			fp.close();
+			break;
+		}
+		case Save:
+		{
+			ofstream fp;
+			fp.open(filename);
+			if (fp.is_open() == false)//不被允许的逻辑错误
+			{
+				CastError("保存失败！请联系管理员ChanningTong@gmail.com");
+				fp.close();
+				break;
+			}
+			SaveToFile(fp);
+			fp.close();
+			break;
+		}
+		case Switch:
+		{
+			if (stage == Drag) 
+			{
+				stage = Hold;
+				Setinfo("选择模式"); _Draw();
+				break;
+			}
+			if (stage == Hold)
+			{
+				stage = Drag;
+				Setinfo("拖动模式"); _Draw();
+				break;
+			}
+		}
+		case DrawPoint:
+		{
+			stage = Drawing;
+			const int x = mouse.x;
+			objList.push_back(new Point());
+			obj = *(objList.end() - 1);
+			break;
+		}
+		case DrawLine:
+		{
+			stage = Drawing;
+			const int x = mouse.x;
+			objList.push_back(dynamic_cast<Point*>(new Line()));
+			obj = *(objList.end() - 1);
+			break;
+		}
+		case DrawPolygen:
+		{
+			stage = Drawing;
+			const int x = mouse.x;
+			objList.push_back(dynamic_cast<Point*>(new Polygen()));
+			obj = *(objList.end() - 1);
+			break;
+		}
+		default: {
+			break;
+		}
 	}
 	return 0;
 }
@@ -640,7 +669,7 @@ int Button::LoadPhoto(std::wstring& name)
 	delete[] wstr;
 	return failed;
 }
-void Button::SaveToFile(fstream& fp)
+void Button::SaveToFile(ofstream& fp)
 {
 	if (!fp.is_open())
 	{
@@ -650,16 +679,12 @@ void Button::SaveToFile(fstream& fp)
    // fp << butList << elmList << objList;
 	return;
 }
-void Button::LoadFromFile(fstream& fp)
+void Button::LoadFromFile(ifstream& fp)
 {
-	if (!fp.is_open())
-	{
-		MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
-		return;
-	}
+	for (auto it = objList.begin(); it != objList.end(); ++it)         delete* it; // 手动释放对象的内存
+	for (auto it = elmList.begin(); it != elmList.end(); ++it)        delete* it; // 手动释放对象的内存
 	objList.clear();
 	elmList.clear();
-	butList.clear();
 	//fp >> objList>>elmList>> butList;
 	for (vector<Point*>::iterator it = objList.begin(); it != objList.end(); ++it)
 		(*it)->_Draw();
@@ -669,7 +694,7 @@ void Button::LoadFromFile(fstream& fp)
 		(*it)->_Draw();
 	return;
 }
-void Button::Addinfo(std::string msg)
+void Button::Setinfo(std::string msg)
 {
 	info = Text(X + (width - _FONT * 4) / 2, Y + (height - _FONT) / 2, msg, _FONT, BLACK);
 	return;
@@ -696,4 +721,28 @@ Polygen* FindPolygen(int ID)
 	}
 	//failed
 	return nullptr;
+}
+
+LPTSTR CharToLPTSTR(const char* str)
+{
+	int len = strlen(str) + 1;
+	int size = MultiByteToWideChar(CP_ACP, 0, str, len, NULL, 0);
+	std::wstring wstr(size, 0);
+	MultiByteToWideChar(CP_ACP, 0, str, len, &wstr[0], size);
+#ifdef _UNICODE
+	return const_cast<LPTSTR>(wstr.c_str());
+#else
+	int size2 = WideCharToMultiByte(CP_OEMCP, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+	std::string str2(size2, 0);
+	WideCharToMultiByte(CP_OEMCP, 0, wstr.c_str(), -1, &str2[0], size2, NULL, NULL);
+	return const_cast<LPTSTR>(str2.c_str());
+#endif
+}
+char* LPTSTRToChar(LPTSTR str)
+{
+	int len = _tcslen(str) + 1;
+	int size = WideCharToMultiByte(CP_ACP, 0, str, len, NULL, 0, NULL, NULL);
+	std::string mbstr(size, 0);
+	WideCharToMultiByte(CP_ACP, 0, str, len, &mbstr[0], size, NULL, NULL);
+	return const_cast<char*>(mbstr.c_str());
 }

@@ -45,26 +45,26 @@ void Initialize(Commander& cmder) {
     }
     {
         using std::string;
-        loadButton.Addinfo(R"(加载底图)");
+        loadButton.Setinfo(R"(加载底图)");
         butList.push_back(&loadButton);        loadButton._Draw();
-        newButton.Addinfo(R"(新建矢量)");
+        newButton.Setinfo(R"(新建矢量)");
         butList.push_back(&newButton);        newButton._Draw();
-        openButton.Addinfo(R"(加载矢量)");
+        openButton.Setinfo(R"(加载矢量)");
         butList.push_back(&openButton);        openButton._Draw();
-        saveButton.Addinfo(R"(保存矢量)");
+        saveButton.Setinfo(R"(保存矢量)");
         butList.push_back(&saveButton);        saveButton._Draw();
-        drawButton1.Addinfo(R"(画    点)");
+        drawButton1.Setinfo(R"(画    点)");
         butList.push_back(&drawButton1);        drawButton1._Draw();
-        drawButton2.Addinfo(R"(画 折 线)");
+        drawButton2.Setinfo(R"(画 折 线)");
         butList.push_back(&drawButton2);        drawButton2._Draw();
-        drawButton3.Addinfo(R"(画多边形)");
+        drawButton3.Setinfo(R"(画多边形)");
         butList.push_back(&drawButton3);        drawButton3._Draw();
-        switchButton.Addinfo(R"(转换模式)");
+        switchButton.Setinfo(R"(选择模式)");
         butList.push_back(&switchButton);        switchButton._Draw();
-        exitButton.Addinfo(R"(退出程序)");
+        exitButton.Setinfo(R"(退出程序)");
         butList.push_back(&exitButton);        exitButton._Draw();
     }
-    loadButton.Press(cmder.getStage(), cmder.getMouse(), cmder.getObj(),true);//加载一张图先
+    loadButton.Press(cmder.stage, cmder.getMouse(), cmder.getObj(),true);//加载一张图先
     setbkmode(TRANSPARENT);                                              // 设置背景模式为透明
     setbkcolor(eColor);                                    // 设置背景色为白色
     return;
