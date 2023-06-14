@@ -20,11 +20,9 @@
  */
 #include "Objects.h"
 #include "GlobalVar.h"
+#include "Errors.h"
 #include <fstream>
 #include <iostream>
-#include <graphics.h>
-#include <conio.h>
-#include <Windows.h>
 
 vector<Point*> objList;
 vector<Squareness*> elmList;
@@ -38,15 +36,6 @@ void Response::Move(const int& dx, const int& dy)
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return;
 }
-
-int Display::getX() const               {return X;}
-int Display::getY() const               {return Y;}
-int Display::getID() const              {return id;}
-
-int Text::getX() const                  {return X;}
-int Text::getY() const                  {return Y;}
-COLORREF  Text::getColor() const              {return color;}
-int Text::getSize() const               { return size; }
 void Text::Print(COLORREF backColor)
 {
 	int len = MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, NULL, 0);
@@ -546,10 +535,14 @@ int Button::Press(Status stage, const MOUSEMSG& mouse, Point* obj,bool Force) {
 		map._Draw();
 		wchar_t buffer[100] = { 0 };
 		InputBox(buffer, 100, L"请输入图片路径与名称");
-		std::wstring photoName=buffer;
-		if (LoadPhoto(photoName))
+		std::wstring photoName = buffer;
+		while (LoadPhoto(photoName)) {
 			//fail to load
-			return -1;
+			memset(buffer, 0, sizeof(buffer));
+			CastError("请输入正确的文件路径和文件名！");
+			InputBox(buffer, 100, L"请输入图片路径与名称");
+			photoName = buffer;
+		}
 		break;
 	}
 	case New:
@@ -630,6 +623,7 @@ int Button::_Delete()
 int Button::LoadPhoto(std::wstring& name)
 {
 	IMAGE	img;
+	bool failed = false;
 	int len = WideCharToMultiByte(CP_ACP, 0, name.c_str(), -1, NULL, 0, NULL, NULL);
 	char* str = new char[len];
 	WideCharToMultiByte(CP_ACP, 0, name.c_str(), -1, str, len, NULL, NULL);
@@ -637,12 +631,14 @@ int Button::LoadPhoto(std::wstring& name)
 	wchar_t* wstr = new wchar_t[len2];
 	MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len2);
 	LPCTSTR lname = wstr;
-	loadimage(&img,lname);
+	loadimage(&img, lname);
+	if (img.getwidth() == 0 && img.getheight() == 0)
+		failed = true;
+	else
+		putimage(_WTool, 0, &img);
 	delete[] str;
 	delete[] wstr;
-	//打开失败返回1
-	putimage(_WTool, 0, &img);
-	return 0;
+	return failed;
 }
 void Button::SaveToFile(fstream& fp)
 {
@@ -700,21 +696,4 @@ Polygen* FindPolygen(int ID)
 	}
 	//failed
 	return nullptr;
-}
-
-bool CastWarning(const char* msg)
-{
-	HWND hnd = GetHWnd();
-	int len = MultiByteToWideChar(CP_ACP, 0, msg, -1, NULL, 0);
-	wchar_t* wmsg = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, msg, -1, wmsg, len);
-	const char* head = "警告！";
-	len = MultiByteToWideChar(CP_ACP, 0, head, -1, NULL, 0);
-	wchar_t* whead = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, head, -1, whead, len);
-	int isDelete = MessageBox(hnd,wmsg, whead, MB_OKCANCEL);
-	delete[] wmsg; delete[] whead;
-	if (isDelete == IDCANCEL)
-		return true;
-	return false;
 }

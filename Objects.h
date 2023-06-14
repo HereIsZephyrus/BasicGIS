@@ -40,6 +40,7 @@ public:
 	Response() :X(0), Y(0), color(WHITE), alpha(1) {
 		id = ++count;
 		drawed = false;
+		focused = false;
 	}
 	Response(int x, int y, COLORREF Color, double Alpha) :X(x), Y(y), color(Color), alpha(Alpha) {
 		id=++count;
@@ -82,9 +83,9 @@ public:
 	~Display() {
 		--count;
 	}
-	int getX() const;
-	int getY() const;
-	int getID() const;
+	int getX() const { return X; }
+	int getY() const { return Y; }
+	int getID() const { return id; }
 	virtual int _Draw() =0;
 	virtual int _Delete()=0;
 	unsigned int getCount() const { return count; };
@@ -98,10 +99,10 @@ protected:
 public:
 	Text(): X(1),Y(1),color(BLACK),size(10){}
 	Text(int x, int y, string Contain,int font=10, COLORREF colour=BLACK) :X(x), Y(y),contain(Contain), size(font),color(colour) {}
-    int getX() const;
-    int getY() const;
-	COLORREF  getColor() const;
-	int getSize() const;
+	int getX() const { return X; }
+	int getY() const { return Y; }
+	COLORREF  getColor() const { return color; }
+	int getSize() const { return size; }
 	void Print(COLORREF);
 };
 class Point :public Response
@@ -256,6 +257,8 @@ public:
 		drawed = false;
 		focused = false;
 	};
+	const int getWidth() {		return width; }
+	const int getHeight() {	return height;}
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
@@ -269,5 +272,4 @@ public:
 
 Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
-bool CastWarning(const char*);
 #endif // !_OBJECTS_H_

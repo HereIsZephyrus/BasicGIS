@@ -4,6 +4,9 @@
 #include<exception>
 #include<iomanip>
 #include<iostream>
+bool CastWarning(const char*);
+bool CastError(const char*);
+/*
 namespace std_errors {
 	using std::logic_error;
 	using std::runtime_error;
@@ -33,5 +36,5 @@ class SetError : public invalid_argument
 {
 
 };
-
+*/
 #endif // !_ERRORS_H_
