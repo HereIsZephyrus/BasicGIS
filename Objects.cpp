@@ -143,6 +143,9 @@ int Point::UnSuspend()
 {
 	focused = false;
     size = _SIZE_;
+	/*
+	* 删除Suspend后更大的点
+	*/
 	setlinecolor(fColor);
 	setlinestyle(PS_SOLID, _BOLDER_);
     return 0;
@@ -247,7 +250,7 @@ int Polygen::Suspend()
 		pt.x = (*it).getX();	pt.y = (*it).getY();
         pts.push_back(pt);
     }
-    setbkcolor(fColor); // 设置背景色为红色
+    setfillcolor(fColor); 
     //setalpha(128);                  // 设置透明度为 50%
     fillpolygon(&pts[0], static_cast<int>(num));
     return 0;
@@ -279,6 +282,8 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
+		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		return 0;
 	}
 	vector<Point>::iterator p = points.begin();
@@ -292,6 +297,8 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	{
 		points.push_back(Point(x1,y1,color,alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
+		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -482,10 +489,14 @@ int Line::_AddPoint(const MOUSEMSG& mouse)
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
+		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		return 0;
 	}
 	points.push_back(Point(x, y, color, alpha, PointType::POLYGEN));
 	points.back().SetFather(id);
+	objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+	dynamic_cast<Point*>(objList.back())->SetFather(id);
 	_Bind(points.end() - 1, points.end() - 2);
 	return 0;
 }
@@ -706,7 +717,7 @@ int Button::_Delete()
 {
 	drawed = false;
 	setfillcolor(tColor);
-	fillroundrect(X-_dx, Y-_dy, X+_dx + width, Y+_dy + height, _Ellipse, _Ellipse);
+	fillroundrect(X - _dx, Y - _dy, X + _dx + width, Y + _dy + height, _Ellipse, _Ellipse);
 	return 0;
 }
 int Button::LoadPhoto(std::wstring& name)

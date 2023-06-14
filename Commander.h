@@ -71,6 +71,5 @@ public:
 };
 
 inline double Distance(const int &, const int &, const int &, const int &);
-bool CheckExceed(const Response*,bool );
 
 #endif // !_COMMANDER_H_

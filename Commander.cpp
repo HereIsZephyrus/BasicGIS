@@ -104,6 +104,16 @@ Response* Commander::FocusObjID(const int x,const int y)
 {
 	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
+		if (dynamic_cast<Point*>(*it) != nullptr) 
+			if (Distance(x, y, (*it)->getX(), (*it)->getY()) < (dynamic_cast<Point*>(*it))->getSize()) 
+				return *it;
+		if (dynamic_cast<Line*>(*it) != nullptr) 
+			if (Line::CheckEdges(x, y, dynamic_cast<Line*>(*it))) 
+				return *it;
+		if (dynamic_cast<Polygen*>(*it) != nullptr) 
+			if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen*>(*it)) & 1) != 0) 
+				return *it;
+		/*
 		if (typeid(*it) == typeid(Point*)) // 指到点的范围内就可以，注意Point的X和Y是中心点
 			if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
 				return *it;
@@ -113,6 +123,7 @@ Response* Commander::FocusObjID(const int x,const int y)
 		if (typeid(*it) == typeid(Polygen*))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
 			if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
 				return *it;
+				*/
 	}
 	return nullptr;
 }
@@ -122,15 +133,6 @@ double Distance(const int& x1, const int& y1, const int& x2, const int& y2)
 	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
-bool CheckExceed(const Response* obj, bool style)
-{
-	if (style == 0)//Line
-	{
-		return false;
-	}
-	//Polygen
-	return false;
-}
 int Commander::onMenuMsg(const MOUSEMSG& mouse)
 {
 	Button* focusedObj = DictateButton(mouse);
@@ -158,7 +160,7 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 	}
 	//否则是选择或者拖动模式
 	Response* focusedObj = FocusObjID(mouse.x, mouse.y);
-	if (obj == nullptr || obj != focusedObj)
+	if (focusedObj == nullptr)//|| obj != focusedObj
 		for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 			if ((*it)->getFocus())  (*it)->UnSuspend();//如果鼠标不在之前focus的对象上
 	if (focusedObj != nullptr)//如果鼠标在新的对象上
@@ -166,32 +168,15 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 	obj = focusedObj;//更新focus对象
 	if (mouse.uMsg == WM_RBUTTONUP)//这个动作是不被定义的，右键只会被用来删除，而删除是瞬间的
 		return 0;
-	if (mouse.uMsg == WM_LBUTTONUP)
+	if (mouse.uMsg == WM_LBUTTONUP)//这个动作的唯一定义是完成拖动
 	{
 		if (stage != Drag)  return 0;
-		else
-		{
-			//stage = Hold;//结束拖动
-			if (typeid(*obj) == typeid(Line))
-				if (!CheckExceed(obj, 0))
-				{
-					// 越界了，非法拖动
-					return -1;
-				}
-			if (typeid(*obj) == typeid(Polygen))
-				if (!CheckExceed(obj, 1))
-				{
-					// 越界了，非法拖动
-					return -1;
-				}
-		}
 	}
 	//剩下的鼠标输入状态只剩下左键按下，右键按下，鼠标移动
 	switch (stage)
 	{
 		case Hold: // 空载状态，可能将更新已有矢量状态
 		{
-			Response* obj = FocusObjID(mouse.x,mouse.y);
 			if (obj == nullptr)
 				break;
 			TOclick(obj, mouse, EXISTED);
@@ -199,7 +184,6 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 		}
 		case Drag:
 		{
-			Response* obj = FocusObjID(mouse.x,mouse.y);
 			if (obj == nullptr)
 				break;
 			switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态
