@@ -8,6 +8,12 @@
         "initializer_list": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "compare": "cpp",
+        "memory": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xtr1common": "cpp"
     }
 }

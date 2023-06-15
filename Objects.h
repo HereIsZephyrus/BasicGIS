@@ -115,9 +115,6 @@ private:
 	int size;
 	Text info;
     PointType type;
-protected:
-	virtual int _Delete();
-	virtual void DisplayInfo() const;
     unsigned int father;
 public:
     Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
@@ -127,15 +124,17 @@ public:
 		focused = false;
 	}
     ~Point() { _Delete(); }
-    int getSize() const;
-	PointType getType() const;
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
     virtual int UnSuspend();
 	virtual int _Draw();
+	virtual int _Delete();
 	virtual int Move(const int&, const int&);
 	void SetFather(unsigned int Fa) { father = Fa; }
+    PointType getType() const {return PointType::MAX_OBJECT;}
+    int getSize() const { return size; }
+	virtual void DisplayInfo() const;
 };
 class Borden :public Display
 {
@@ -144,10 +143,10 @@ private:
 public:
 	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY,BLACK),termX(tX),termY(tY),bold(Bold){}
     ~Borden() { _Delete(); }
-	int getTermX() const;
-	int getTermY() const;
-	int getBold() const;
-	inline double CalcX(const int&);
+    int getTermX() const { return termX; }
+    int getTermY() const { return termY; }
+    int getBold() const { return bold; }
+    inline double CalcX(const int&);
 	virtual void DisplayInfo() const;
 	virtual int _Draw();
 	virtual int _Delete();
@@ -173,6 +172,7 @@ public:
 class Polygen :public Response
 {
 friend class Point;
+friend class Commander;
 private:
 	vector<Point> points;
 	vector<Borden> borders;
@@ -212,6 +212,7 @@ public:
 class Line :public Response
 {
 friend class Point;
+friend class Commander;
 private:
 	vector<Point> points;
 	vector<Borden> borders;
@@ -272,7 +273,7 @@ public:
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
-	int Press(Status&,const MOUSEMSG&, Response*&,bool);
+	int Press(Status&,const MOUSEMSG&, Response*&,const bool);
 	virtual int _Draw();
     virtual int _Delete();
     virtual void DisplayInfo() const;
@@ -283,4 +284,5 @@ Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
 LPTSTR CharToLPTSTR(const char*);
 char* LPTSTRToChar(LPTSTR str);
+void ReDraw(const int &, const int &, const int &, const int &);
 #endif // !_OBJECTS_H_

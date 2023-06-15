@@ -104,26 +104,27 @@ Response* Commander::FocusObjID(const int x,const int y)
 {
 	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
-		if (dynamic_cast<Point*>(*it) != nullptr) 
-			if (Distance(x, y, (*it)->getX(), (*it)->getY()) < (dynamic_cast<Point*>(*it))->getSize()) 
+		if (dynamic_cast<Point*>(*it) != nullptr)
+			if (Distance(x, y, (*it)->getX(), (*it)->getY()) < (dynamic_cast<Point*>(*it))->getSize())
 				return *it;
-		if (dynamic_cast<Line*>(*it) != nullptr) 
-			if (Line::CheckEdges(x, y, dynamic_cast<Line*>(*it))) 
-				return *it;
-		if (dynamic_cast<Polygen*>(*it) != nullptr) 
-			if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen*>(*it)) & 1) != 0) 
-				return *it;
-		/*
-		if (typeid(*it) == typeid(Point*)) // 指到点的范围内就可以，注意Point的X和Y是中心点
-			if (Distance(x, y, (*it)->getX(), (*it)->getY())<(dynamic_cast<Point *>(*it))->getSize())
-				return *it;
-		if (typeid(*it) == typeid(Line*))
-			if (Line::CheckEdges(x, y, dynamic_cast<Line *>(*it)))
-				return *it;
-		if (typeid(*it) == typeid(Polygen*))// 通过鼠标x轴坐标经过的绘制边界的奇偶性，判断鼠标是否在对象中
-			if ((Polygen::CalcLine(x, y, dynamic_cast<Polygen *>(*it)) & 1) != 0)
-				return *it;
-				*/
+		if (dynamic_cast<Line*>(*it) != nullptr)
+		{
+            Line *line = dynamic_cast<Line*>(*it);
+			if (Line::CheckEdges(x, y, line))
+				return line;
+			for (vector<Point>::iterator p = line->points.begin(); p != line->points.end(); ++p)
+                if (Distance(x, y, p->getX(), p->getY()) < p->getSize())
+                    return &(*p);
+		}
+		if (dynamic_cast<Polygen*>(*it) != nullptr)
+		{
+            Polygen *polygen = dynamic_cast<Polygen*>(*it);
+            if ((Polygen::CalcLine(x, y, polygen) & 1) != 0)
+                return polygen;
+            for (vector<Point>::iterator p = polygen->points.begin(); p != polygen->points.end(); ++p)
+                if (Distance(x, y, p->getX(), p->getY()) < p->getSize())
+                    return &(*p);
+        }
 	}
 	return nullptr;
 }

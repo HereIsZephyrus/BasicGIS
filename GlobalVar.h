@@ -2,6 +2,16 @@
  * @Author: ChanningTong Channing_TongCN@outlook.com
  * @Date: 2023-06-11 22:10:24
  * @LastEditors: ChanningTong Channing_TongCN@outlook.com
+ * @LastEditTime: 2023-06-15 23:15:39
+ * @FilePath: \BasicGIS\GlobalVar.h
+ * @Description:
+ * @
+ * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
+ */
+/***
+ * @Author: ChanningTong Channing_TongCN@outlook.com
+ * @Date: 2023-06-11 22:10:24
+ * @LastEditors: ChanningTong Channing_TongCN@outlook.com
  * @LastEditTime: 2023-06-13 23:15:15
  * @FilePath: \BasicGIS\GlobalVar.h
  * @Description:
@@ -36,6 +46,7 @@ constexpr COLORREF(eColor) = RGB(250, 250, 250);//橡皮擦颜色
 constexpr COLORREF(tColor) = RGB(0, 191, 255);//工具栏颜色
 constexpr COLORREF(bColor) = YELLOW;//按钮颜色
 constexpr COLORREF(fColor) = RGB(210, 105, 30);//点线面的填充颜色
+constexpr COLORREF(sColor) = RGB(255, 105, 180); // 点线面的选中颜色
 class Point;
 class Button;
 class Squareness;

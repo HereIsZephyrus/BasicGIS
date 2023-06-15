@@ -38,6 +38,9 @@ Button exitButton(_LButton, _UButton + (_HButton + _GButton) * 8, bColor,  _WBut
 Button finishButton(_LButton, _UButton + (_HButton + _GButton) * 9, bColor, _WButton, _HButton, Finish);
 void Initialize(Commander& cmder) {
 	initgraph(_Width, _Height);
+    setbkmode(TRANSPARENT);          // 设置背景模式为透明
+    setbkcolor(eColor);                       // 设置背景色为白色
+    setlinestyle(PS_NULL, _BOLDER_);   // 设置线型为不可见，粗细为1
     {
         toolbar.AddText(Text((_WTool-_FONT*3)/2, 10, "工具栏", _FONT, RGB(75, 0, 130)));
         toolbar._Draw();
@@ -67,8 +70,6 @@ void Initialize(Commander& cmder) {
         butList.push_back(&finishButton);
     }
     loadButton.Press(cmder.stage, cmder.getMouse(), cmder.getObj(),true);//加载一张图先
-    setbkmode(TRANSPARENT);                                              // 设置背景模式为透明
-    setbkcolor(eColor);                                    // 设置背景色为白色
     return;
 }
 void ShutDown(Commander& cmder) {

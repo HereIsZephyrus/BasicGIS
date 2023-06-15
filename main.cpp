@@ -14,8 +14,8 @@
 #include "Errors.h"
 #include "Commander.h"
 
+Commander cmder;
 int main(int argc,char *argv[]) {
-    Commander cmder;
 	Initialize(cmder);
     bool bExit = false;
     while (!bExit)

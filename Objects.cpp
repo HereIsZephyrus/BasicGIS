@@ -22,6 +22,7 @@
 #include "Objects.h"
 #include "GlobalVar.h"
 #include "Errors.h"
+#include "Commander.h"
 #include <windows.h>
 #include <fstream>
 #include <iostream>
@@ -47,17 +48,6 @@ void Text::Print(COLORREF backColor)
 	delete[] wstr;
 	return;
 }
-
-int Point::getSize() const              {return size;}
-
-int Borden::getTermX() const             {return termX;}
-int Borden::getTermY() const             {return termY;}
-int Borden::getBold() const             {return bold;}
-void Borden::DisplayInfo() const
-{
-	return;
-}
-
 void Squareness::AddText(Text texts)
 {
 	msg.push_back(texts);
@@ -74,13 +64,17 @@ int Squareness::_Draw()
 		(*it).Print(color);
 		y = y + (*it).getSize()+_dy;
 	}
-	//@@@@@@@@@@@@@@@HereIsZephyrus绘制边框
 	return 0;
 }
 int Squareness::_Delete()
 {
 	drawed = false;
-	return 0;
+	clearrectangle(X,Y,X+width,Y+height);
+    ReDraw(X,X+width,Y,Y);
+    ReDraw(X, X + width, Y+height, Y+height);
+    ReDraw(X, X, Y, Y + height);
+    ReDraw(X + width, X + width, Y, Y + height);
+    return 0;
 	//@@@@@@@@@@@@@@@HereIsZephyrus擦掉图像
 }
 
@@ -124,42 +118,36 @@ int Point::ClickRight(bool Status, const MOUSEMSG &mouse)
 		break;
 		}
 	}
-
 	return 0;
-}
-PointType Point::getType() const
-{
-	return PointType::MAX_OBJECT;
 }
 int Point::Suspend()
 {
 	focused = true;
 	size= _SIZE_ *1.2;
-	setfillcolor(fColor);
+	setfillcolor(sColor);
 	fillcircle(X, Y, size);
 	return 0;
 }
 int Point::UnSuspend()
 {
 	focused = false;
+    clearcircle(X, Y, size); // 删除Suspend后更大的点
     size = _SIZE_;
-	/*
-	* 删除Suspend后更大的点
-	*/
 	setlinecolor(fColor);
 	setlinestyle(PS_SOLID, _BOLDER_);
+    circle(X, Y, size);
+    setlinestyle(PS_NULL, _BOLDER_);
     return 0;
 }
 int Point::_Draw()
 {
-	if (drawed)//failed
-		return 1;
 	drawed = true;
 	size = _SIZE_;
 	setlinecolor(fColor);
-	setlinestyle(PS_SOLID, _BOLDER_); 
-	circle(X, Y, size-1);
-	return 0;
+	setlinestyle(PS_SOLID, _BOLDER_);
+	circle(X, Y, size);
+    setlinestyle(PS_NULL, _BOLDER_);
+    return 0;
 }
 int Point::_Delete()
 {
@@ -167,48 +155,37 @@ int Point::_Delete()
 		return 1;
 	drawed = false;
 	color = 0;  size = _SIZE_;
-	//@@@@@@@@@@@@@HereIsZephyrus擦掉图像
+    clearcircle(X, Y, size);
+    ReDraw(X - size/2, X - size/2, Y - size/2, Y + size/2);
+    ReDraw(X - size/2, X + size/2, Y - size/2, Y - size/2);
+    ReDraw(X + size/2, X + size/2, Y - size/2, Y + size/2);
+    ReDraw(X - size/2, X + size/2, Y + size/2, Y + size/2);
 	return 0;
-}
-void Point::DisplayInfo() const
-{
-	const int n = 2;
-	Squareness Msg(X+_dx,Y+_dy,_WMSG,_FONT*n);
-	{//n
-		Msg.AddText(Text());
-		Msg.AddText(Text());
-	}
-	if (!drawed) Msg._Draw();
-	else            Msg._Delete();
-	return;
 }
 
 int Borden::_Draw()
 {
-	if (drawed)//failed
-		return 1;
 	drawed = true;
-	setlinecolor(fColor); // 将直线的颜色设置为红色
-	setlinestyle(PS_SOLID, _BOLD_); 
+	setlinecolor(fColor);
+	setlinestyle(PS_SOLID, _BOLD_);
 	line(X, Y, termX, termY);
-	return 0;
+    setlinestyle(PS_NULL, _BOLDER_);
+    return 0;
 }
 int Borden::_Delete()
 {
 	if (!drawed)//failed
 		return 1;
 	drawed = false;
-	//@@@@@@@@@@@@@HereIsZephyrus擦掉图像
+    setrop2(R2_NOP);//用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+    line(X, Y, termX, termY);
+    setrop2(R2_COPYPEN);
 	return 0;
 }
 double Borden::CalcX(const int &y)
 {
 	double k=(termY-Y)/(termX-X);
 	return k*(y-Y)+X;
-}
-void Button::DisplayInfo() const{
-	//右键显示个guide信息
-	return;
 }
 
 int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
@@ -222,8 +199,17 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 	while (!_AddPoint(tmpMsg)) {
 		_Draw();
 		MOUSEMSG Catch=GetMouseMsg();
-		while (Catch.uMsg!=WM_LBUTTONDOWN)
+		while (Catch.uMsg!=WM_LBUTTONDOWN){
 			Catch= GetMouseMsg();
+            // 如果鼠标在点上，把这个点删除
+            if (Catch.uMsg == WM_RBUTTONDOWN && points.size() >= 2)
+                for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)
+                    if (sqrt((mouse.x - (*p).getX()) * (mouse.x - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
+                    {
+                        _DeletePoint(points.back().getID());
+                        break;
+                    }
+        }
 		tmpMsg = Catch;
 	}
 	_Draw();
@@ -234,7 +220,6 @@ int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
 	if (Status == EXISTED && CastWarning("您确定要删除该多边形吗?") == true) //显示文本框确认（利用短路特性）
 		return 0;
 	_Delete();
-	//在绘制过程中是不可以一下子删除一整个面对象的，所以这里不用管，在Drawing时点到点上会自己删除，边是Display对象不用管
 	return 0;
 }
 int Polygen::Suspend()
@@ -242,15 +227,15 @@ int Polygen::Suspend()
 	focused = true;
 	//填充一个多边形出来，透明度低一些
 	const size_t num = points.size();
-    if (num < 3) return 1;//failed
+    if (num < 3)    return 1;//failed
     vector<POINT> pts;
 	for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
     {
-		POINT pt;	
+		POINT pt;
 		pt.x = (*it).getX();	pt.y = (*it).getY();
         pts.push_back(pt);
     }
-    setfillcolor(fColor); 
+    setfillcolor(fColor);
     //setalpha(128);                  // 设置透明度为 50%
     fillpolygon(&pts[0], static_cast<int>(num));
     return 0;
@@ -259,7 +244,22 @@ int Polygen::UnSuspend()
 {
 	focused = false;
     //擦掉填充的多边形
-    cleardevice();
+    const size_t num = points.size();
+    if (num < 3)    return 1; // failed
+    vector<POINT> pts;
+    for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        POINT pt;
+        pt.x = (*it).getX();
+        pt.y = (*it).getY();
+        pts.push_back(pt);
+    }
+
+    setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+    fillpolygon(&pts[0], static_cast<int>(num));
+    setrop2(R2_COPYPEN);
+    for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
+        ReDraw((*it).getX(), (*it).getTermX(), (*it).getY(), (*it).getTermY());
     return 0;
 }
 double Polygen::CalcArea()
@@ -282,13 +282,11 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
-		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
-		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		return 0;
 	}
 	vector<Point>::iterator p = points.begin();
 	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
-	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= _SIZE_*1.3) 
+	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= _SIZE_*1.3)
 	{
 		_Bind(points.begin(), points.end() - 1);//手动封闭了
 		return 1;
@@ -297,8 +295,6 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	{
 		points.push_back(Point(x1,y1,color,alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
-		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
-		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		_Bind(points.end() - 1, points.end() - 2);
 	}
 	return 0;
@@ -353,12 +349,14 @@ int Polygen::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
 int Polygen::_Erase(Borden* b)
 {
 	//这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
-	//！！！记得擦掉图像
 	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
 		if (&*it == b)
 		{
 			borders.erase(it);
-			return 0;
+            setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+            line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+            setrop2(R2_COPYPEN);
+            return 0;
 		}
 	return 0;
 }
@@ -372,6 +370,8 @@ int Polygen::_Draw()
 int Polygen::_Delete()
 {
 	drawed = false;
+    for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)			(*p)._Delete();
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	(*b)._Delete();
 	return 0;
 }
 int Polygen::CalcLine(const int& x, const int& y, Polygen* obj)
@@ -381,17 +381,6 @@ int Polygen::CalcLine(const int& x, const int& y, Polygen* obj)
 	for (vector<Borden>::iterator it = (poly->borders).begin(); it != (poly->borders).end(); ++it)
 		if ((*it).CalcX(y) <= x)   ++calc;
 	return calc;
-}
-void Polygen::DisplayInfo() const
-{
-	const int n = 2;
-	Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
-	{//n
-		Msg.AddText(Text());
-		Msg.AddText(Text());
-	}
-	Msg._Draw();
-	return;
 }
 
 int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
@@ -403,6 +392,7 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 	}
 	MOUSEMSG tmpMsg = mouse;
 	extern Button finishButton;
+    extern Commander cmder;
 	while (!_AddPoint(tmpMsg)) {
 		_Draw();
 		if (points.size() >= 2) 	finishButton._Draw();
@@ -417,6 +407,26 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 			else
 				if (finishButton.getFocus() == true && points.size() >= 2)
 					finishButton.UnSuspend();
+            if (Catch.uMsg == WM_RBUTTONDOWN && points.size() >= 2)
+            {
+                // 如果鼠标在点上，把这个点删除
+                bool Inpoint=false;
+                for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)
+                    if (sqrt((mouse.x - (*p).getX()) * (mouse.x - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
+                    {
+                        Inpoint=true;
+                        _DeletePoint(points.back().getID());
+                        break;
+                    }
+                if (!Inpoint)
+                {
+					MOUSEMSG tempmsg = Catch;
+					tempmsg.uMsg = WM_LBUTTONDOWN;
+					tempmsg.x = finishButton.getX() + 1;	tempmsg.y = finishButton.getY() + 1;
+                    finishButton.Press(cmder.stage,tempmsg,cmder.getObj(), true);
+                    break;
+                }
+            }
 			Catch = GetMouseMsg();
 		}
 		tmpMsg = Catch;
@@ -427,22 +437,44 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 }
 int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
 {
-	if (Status == EXISTED && CastWarning("您确定要删除该线吗?") == true) //显示文本框确认（利用短路特性）
-		return 0;
-	_Delete();
-	// 在绘制过程中是不可以一下子删除一整个线对象的，所以这里不用管，在Drawing时点到点和边上会自己删除
+    if (Status == EXISTED && CastWarning("您确定要删除该线吗?") == true)
+		    return 0;
+    _Delete();
 	return 0;
 }
 int Line::Suspend()
 {
 	focused = true;
-	//把线变个色
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
+    {
+        setlinecolor(fColor);
+        setlinestyle(PS_SOLID, _BOLD_+2);
+        line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+        setlinestyle(PS_NULL, _BOLDER_);
+    }
 	return 0;
 }
 int Line::UnSuspend()
 {
 	focused = false;
-    //把线变回来
+    //把高亮线擦掉
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
+    {
+        setlinecolor(fColor);
+        setlinestyle(PS_SOLID, _BOLD_ + 2);
+        setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+        line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+        setrop2(R2_COPYPEN);
+        setlinestyle(PS_NULL, _BOLDER_);
+    }
+    //重新绘制线
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
+    {
+        setlinecolor(fColor);
+        setlinestyle(PS_SOLID, _BOLD_ + 2);
+        line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+        setlinestyle(PS_NULL, _BOLDER_);
+    }
     return 0;
 }
 double Line::CalcLength()
@@ -463,17 +495,6 @@ bool Line::CheckEdges(const int& x, const int& y, Line* obj)
 	}
 	return false;
 }
-void Line::DisplayInfo() const
-{
-	const int n = 2;
-	Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
-	{//n
-		Msg.AddText(Text());
-		Msg.AddText(Text());
-	}
-	Msg._Draw();
-	return;
-}
 int Line::_AddPoint(const MOUSEMSG& mouse)
 {
 	extern Button finishButton;
@@ -481,7 +502,7 @@ int Line::_AddPoint(const MOUSEMSG& mouse)
 	if (x<_WTool || x>_Width || y<0 || y>_Height)
 	{
 		if ((x >= finishButton.getX() && x <= finishButton.getX() + finishButton.getWidth()) &&
-			(y >= finishButton.getY() && y <= finishButton.getY() + finishButton.getHeight())) 
+			(y >= finishButton.getY() && y <= finishButton.getY() + finishButton.getHeight()))
 			return 1;
 		CastError("请在图框范围内绘制");
 		return 0;
@@ -489,14 +510,10 @@ int Line::_AddPoint(const MOUSEMSG& mouse)
 	if (points.empty()) {
 		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
 		points.back().SetFather(id);
-		objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
-		dynamic_cast<Point*>(objList.back())->SetFather(id);
 		return 0;
 	}
 	points.push_back(Point(x, y, color, alpha, PointType::POLYGEN));
 	points.back().SetFather(id);
-	objList.push_back(new Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
-	dynamic_cast<Point*>(objList.back())->SetFather(id);
 	_Bind(points.end() - 1, points.end() - 2);
 	return 0;
 }
@@ -549,19 +566,22 @@ int Line::_Bind(vector<Point>::iterator p1, vector<Point>::iterator p2)
 int Line::_Erase(Borden* b)
 {
 	//这里有个bug，就是删除的时候，如果是最后一个，那么就会越界，但是这个函数不会被调用到，所以不用管
-	//！！！记得擦掉图像
-	for (vector<Borden>::iterator it=borders.begin(); it!=borders.end(); ++it)
-		if (&*it == b)
-		{
-			borders.erase(it);
-			return 0;
-		}
-	return 0;
+    for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
+        if (&*it == b)
+        {
+            borders.erase(it);
+            setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+            line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+            setrop2(R2_COPYPEN);
+            return 0;
+        }
+    return 0;
 }
 int Line::_Delete()
 {
 	drawed = false;
-	//@@@@@@@@@@HereIsZephyrus擦掉图像
+    for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)    (*p)._Delete();
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)    (*b)._Delete();
 	return 0;
 }
 
@@ -586,7 +606,7 @@ int Button::Suspend()
 int Button::UnSuspend()
 {
 	focused = false;
-    color=bColor;//白色
+    color=bColor;//黄色
     _Draw();
     return 0;
 }
@@ -662,7 +682,7 @@ int Button::Press(Status& stage, const MOUSEMSG& mouse, Response*& obj,bool Forc
 		}
 		case Switch:
 		{
-			if (stage == Drag) 
+			if (stage == Drag)
 			{
 				stage = Hold;
 				Setinfo("选择模式"); _Draw();
@@ -859,4 +879,67 @@ char* LPTSTRToChar(LPTSTR str)
 	std::string mbstr(size, 0);
 	WideCharToMultiByte(CP_ACP, 0, str, len, &mbstr[0], size, NULL, NULL);
 	return const_cast<char*>(mbstr.c_str());
+}
+
+void Button::DisplayInfo() const
+{
+    // 右键显示个guide信息
+    return;
+}
+void Borden::DisplayInfo() const
+{
+    return;
+}
+void Point::DisplayInfo() const
+{
+    const int n = 2;
+    Squareness Msg(X + _dx, Y + _dy, _WMSG, _FONT * n);
+    { // n
+        Msg.AddText(Text());
+        Msg.AddText(Text());
+    }
+    if (!drawed)
+        Msg._Draw();
+    else
+        Msg._Delete();
+    return;
+}
+void Polygen::DisplayInfo() const
+{
+    const int n = 2;
+    Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
+    { // n
+        Msg.AddText(Text());
+        Msg.AddText(Text());
+    }
+    Msg._Draw();
+    return;
+}
+void Line::DisplayInfo() const
+{
+    const int n = 2;
+    Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
+    { // n
+        Msg.AddText(Text());
+        Msg.AddText(Text());
+    }
+    Msg._Draw();
+    return;
+}
+
+void ReDraw(const int& x1, const int& x2, const int& y1, const int& y2)
+{
+	extern Commander cmder;
+    double k=(double)(y2-y1)/(x2-x1);
+    for (int i = x1; i <= x2; ++i){
+        int j=(int)(k*(i-x1)+y1);
+		Response* tmpObj = nullptr;
+		tmpObj=cmder.FocusObjID(i, j-1);
+        if (tmpObj!=nullptr)    tmpObj->_Draw();
+        tmpObj = cmder.FocusObjID(i, j);
+        if (tmpObj != nullptr)    tmpObj->_Draw();
+        tmpObj = cmder.FocusObjID(i, j+1);
+        if (tmpObj != nullptr)  tmpObj->_Draw();
+    }
+    return;
 }
