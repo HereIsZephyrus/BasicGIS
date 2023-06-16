@@ -156,11 +156,53 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 }
 int Commander::onDrawMsg(const MOUSEMSG& mouse)
 {
-	if (stage == Drawing) {
+	if (stage == Drawing)
+	{
 		TOclick(obj, mouse, DRAWING);
 		return 0;
 	}
-	//否则是选择或者拖动模式
+	if (Moving == true)
+	{
+		obj->Move(mouse.x - movingX, mouse.y - movingY);
+		Flush();
+		movingX = mouse.x; movingY = mouse.y;
+		if (mouse.uMsg == WM_LBUTTONUP)//结束拖动
+		{
+			Moving = false;
+			if (dynamic_cast<Point*>(obj) != nullptr)
+			{
+				Point* point = dynamic_cast<Point*>(obj);
+				if (point->getFather() != point->getID())//是边中或者线中的一点
+					for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
+						if ((*it)->getID() == point->getFather())
+						{
+							if (dynamic_cast<Line*>(*it) != nullptr)
+							{
+								Polygen* line = dynamic_cast<Polygen*>(*it);
+								for (vector<Borden>::iterator b = (line->borders).begin(); b != (line->borders).end(); ++b)
+								{
+									if ((*b).getX() == originX&& (*b).getY() == originY)
+                                        (*b).setStart(point->getX(), point->getY());
+                                    if ((*b).getTermX() == originX&& (*b).getTermY() == originY)
+                                        (*b).setTerm(point->getX(), point->getY());
+                                }
+							}
+                            if (dynamic_cast<Polygen*>(*it) != nullptr)
+                            {
+                                Polygen *poly = dynamic_cast<Polygen *>(*it);
+                                for (vector<Borden>::iterator b = (poly->borders).begin(); b != (poly->borders).end(); ++b)
+                                {
+                                    if ((*b).getX() == originX && (*b).getY() == originY)
+                                        (*b).setStart(point->getX(), point->getY());
+                                    if ((*b).getTermX() == originX && (*b).getTermY() == originY)
+                                        (*b).setTerm(point->getX(), point->getY());
+                                }
+                            }
+                        }
+			}
+		}
+		return 0;
+	}
 	Response* focusedObj = FocusObjID(mouse.x, mouse.y);
 	if (focusedObj == nullptr)//|| obj != focusedObj
 		for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
@@ -168,46 +210,15 @@ int Commander::onDrawMsg(const MOUSEMSG& mouse)
 	if (focusedObj != nullptr)//如果鼠标在新的对象上
 		focusedObj->Suspend();//focus新的对象
 	obj = focusedObj;//更新focus对象
-	if (mouse.uMsg == WM_RBUTTONUP)//这个动作是不被定义的，右键只会被用来删除，而删除是瞬间的
+	if (obj == nullptr)	return 0;
+	if (stage == Drag && mouse.uMsg == WM_LBUTTONDOWN) //Moving=false
+	{
+		Moving = true;
+		movingX = mouse.x; movingY = mouse.y;
+        originX=obj->getX();originY=obj->getY();
 		return 0;
-	if (mouse.uMsg == WM_LBUTTONUP)//这个动作的唯一定义是完成拖动
-	{
-		if (stage != Drag)  return 0;
 	}
-	//剩下的鼠标输入状态只剩下左键按下，右键按下，鼠标移动
-	switch (stage)
-	{
-		case Hold: // 空载状态，可能将更新已有矢量状态
-		{
-			if (obj == nullptr)
-				break;
-			TOclick(obj, mouse, EXISTED);
-			break;
-		}
-		case Drag:
-		{
-			if (obj == nullptr)
-				break;
-			switch (mouse.uMsg)//查看鼠标信息看看是被拖动的哪一个状态
-			{
-			case WM_LBUTTONUP:
-			{
-				//开始拖动
-				break;
-			}
-			case WM_LBUTTONDOWN://结束拖动
-			{
-				//obj->Move(mouse.x - obj->getX(), mouse.y - obj->getY());
-				break;
-			}
-			case WM_MOUSEMOVE:
-			{
-				//拖动过程中，有精力写个异或线，先空着
-				break;
-			}
-			}
-			break;
-		}
-	}
-	return 0;
+	if (stage == Hold)
+		TOclick(obj, mouse, EXISTED);
+	return 1;//failed
 }

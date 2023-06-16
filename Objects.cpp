@@ -818,7 +818,6 @@ int Point::Move(const int& dx, const int& dy)
 		return 1;
 	X = X + dx;
 	Y = Y + dy;
-	_Draw();
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return 0;
 }
@@ -830,7 +829,6 @@ int Borden::Move(const int& dx, const int& dy)
 		return 1;
 	X = X + dx;	termX = termX + dx;
 	Y = Y + dy;	termY = termY + dy;
-	_Draw();
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return 0;
 }
@@ -840,7 +838,6 @@ int Polygen::Move(const int& dx, const int& dy)
 		(*it).Move(dx, dy);
 	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
 		(*it).Move(dx, dy);
-	_Draw();
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return 0;
 }
@@ -850,7 +847,6 @@ int Line::Move(const int& dx, const int& dy)
 		(*it).Move(dx, dy);
 	for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
 		(*it).Move(dx, dy);
-	_Draw();
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return 0;
 }

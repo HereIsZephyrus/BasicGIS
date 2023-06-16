@@ -2,6 +2,16 @@
  * @Author: ChanningTong Channing_TongCN@outlook.com
  * @Date: 2023-06-11 22:10:24
  * @LastEditors: ChanningTong Channing_TongCN@outlook.com
+ * @LastEditTime: 2023-06-16 20:45:15
+ * @FilePath: \BasicGIS\Commander.h
+ * @Description:
+ * @
+ * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
+ */
+/***
+ * @Author: ChanningTong Channing_TongCN@outlook.com
+ * @Date: 2023-06-11 22:10:24
+ * @LastEditors: ChanningTong Channing_TongCN@outlook.com
  * @LastEditTime: 2023-06-15 23:24:53
  * @FilePath: \BasicGIS\Commander.h
  * @Description:
@@ -28,6 +38,10 @@ class Squareness;
 class Button;
 class Polygen;
 class Line;
+
+static bool Moving = false;
+static int movingX = 0, movingY = 0;
+static int originX = 0, originY = 0;
 class Commander {
 	friend class Button;
 private:

@@ -153,6 +153,7 @@ public:
 	void SetFather(unsigned int Fa) { father = Fa; }
     PointType getType() const {return PointType::MAX_OBJECT;}
     int getSize() const { return size; }
+	int getFather()const { return father; }
 	virtual void DisplayInfo() const;
 };
 class Borden :public Display
@@ -171,6 +172,8 @@ public:
 	virtual int _Draw();
 	virtual int _Delete();
 	virtual int Move(const int&, const int&);
+	void setStart(const int& sX, const int& sY) { X = sX; Y = sY;  }
+	void setTerm(const int& tX, const int& tY) { termX = tX; termY = tY; }
 };
 
 class Squareness :public Display
