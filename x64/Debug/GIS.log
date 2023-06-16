@@ -1,4 +1,6 @@
-﻿  Objects.cpp
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(844,27): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Administrator\GitHub\BasicGIS\Objects.cpp(859,28): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+﻿  Commander.cpp
+  Objects.cpp
+  Solution.cpp
+  main.cpp
+  正在生成代码...
   GIS.vcxproj -> C:\Users\Administrator\GitHub\BasicGIS\x64\Debug\GIS.exe

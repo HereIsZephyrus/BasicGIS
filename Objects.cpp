@@ -18,11 +18,11 @@
  * @
  * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
  */
-#define _CRT_SECURE_NO_WARNINGS//!!!!!!!!!!!!!!
 #include "Objects.h"
 #include "GlobalVar.h"
 #include "Errors.h"
 #include "Commander.h"
+#include "Enums.h"
 #include <windows.h>
 #include <fstream>
 #include <iostream>
@@ -32,6 +32,10 @@ vector<Squareness*> elmList;
 vector<Button*> butList;
 unsigned int Response::count = 0;
 unsigned int Display::count = 0;
+static wstring filename{};
+using std::istream;
+using std::ostream;
+using std::endl;
 IMAGE img;
 
 void Text::Print(COLORREF backColor)
@@ -281,7 +285,7 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 		return 0;
 	}
 	if (points.empty()) {
-		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		points.push_back(Point(mouse.x, mouse.y, color,PointType::POLYGEN));
 		points.back().SetFather(id);
 		return 0;
 	}
@@ -294,7 +298,7 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	}
 	else
 	{
-		points.push_back(Point(x1,y1,color,alpha, PointType::POLYGEN));
+		points.push_back(Point(x1,y1,color,PointType::POLYGEN));
 		points.back().SetFather(id);
 		_Bind(points.end() - 1, points.end() - 2);
 	}
@@ -497,11 +501,11 @@ int Line::_AddPoint(const MOUSEMSG& mouse)
 		return 0;
 	}
 	if (points.empty()) {
-		points.push_back(Point(mouse.x, mouse.y, color, alpha, PointType::POLYGEN));
+		points.push_back(Point(mouse.x, mouse.y, color,  PointType::POLYGEN));
 		points.back().SetFather(id);
 		return 0;
 	}
-	points.push_back(Point(x, y, color, alpha, PointType::POLYGEN));
+	points.push_back(Point(x, y, color, PointType::POLYGEN));
 	points.back().SetFather(id);
 	_Bind(points.end() - 1, points.end() - 2);
 	return 0;
@@ -631,25 +635,26 @@ int Button::Press(Status& stage, const MOUSEMSG& mouse, Response*& obj,bool Forc
 		}
 		case New:
 		{
-			InputBox(filename, 50, L"请输入文件名称（不包含后缀名）");
-			filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
-			ofstream fp;
-			fp.open(filename);
+			TCHAR name[MAX_PATH] = { 0 };
+			InputBox(name, 50, L"请输入文件名称（不包含后缀名）");
+			filename=wstring(name);
+			filename +=  L".vec";
+			ofstream fp(filename);
 			SaveToFile(fp);
 			fp.close();
 			break;
 		}
 		case Open:
 		{
-			InputBox(filename, 50, L"请输入文件名称(不包含后缀名)");
-			filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
+			TCHAR name[MAX_PATH] = { 0 };
+			InputBox(name, 50, L"请输入文件名称（不包含后缀名）");
+			filename = wstring(name);
+			filename += L".vec";
 			ifstream fp;
 			fp.open(filename);
 			while (fp.is_open() == false) {
-				MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
-				InputBox(filename, 50, L"请输入文件名称（不包含后缀名）");
-				filename = CharToLPTSTR(strcat(LPTSTRToChar(filename), ".vec"));
-				fp.open(filename);
+				CastError("请输入正确文件名称（不包含后缀名）");
+				return 0;
 			}
 			LoadFromFile(fp);
 			fp.close();
@@ -658,6 +663,13 @@ int Button::Press(Status& stage, const MOUSEMSG& mouse, Response*& obj,bool Forc
 		case Save:
 		{
 			ofstream fp;
+			if (filename.size() == 0)
+			{
+				TCHAR name[MAX_PATH] = { 0 };
+				InputBox(name, 50, L"请输入文件名称（不包含后缀名）");
+				filename = wstring(name);
+				filename += L".vec";
+			}
 			fp.open(filename);
 			if (fp.is_open() == false)//不被允许的逻辑错误
 			{
@@ -755,7 +767,8 @@ void Button::SaveToFile(ofstream& fp)
 		MessageBox(NULL, L"Open File Failed.", L"ERROR...", MB_ICONERROR);
 		return;
 	}
-   // fp << butList << elmList << objList;
+    for (vector<Response*>::iterator it=objList.begin(); it!=objList.end(); ++it)
+        fp << *(*it);
 	return;
 }
 void Button::LoadFromFile(ifstream& fp)
@@ -764,12 +777,15 @@ void Button::LoadFromFile(ifstream& fp)
 	for (auto it = elmList.begin(); it != elmList.end(); ++it)        delete* it; // 手动释放对象的内存
 	objList.clear();
 	elmList.clear();
-	//fp >> objList>>elmList>> butList;
+    while (!fp.eof())
+    {
+        Response *pshp = Response::FindClone(fp); // findClone的实现见下
+        if (pshp)
+            objList.push_back(pshp);
+    }
 	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 		(*it)->_Draw();
 	for (vector<Squareness*>::iterator it = elmList.begin(); it != elmList.end(); ++it)
-		(*it)->_Draw();
-	for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
 		(*it)->_Draw();
 	return;
 }
@@ -837,30 +853,6 @@ int Line::Move(const int& dx, const int& dy)
 	_Draw();
 	//对对象进行移动，并用EdgeError类处理非法移动
 	return 0;
-}
-
-LPTSTR CharToLPTSTR(const char* str)
-{
-	int len = strlen(str) + 1;
-	int size = MultiByteToWideChar(CP_ACP, 0, str, len, NULL, 0);
-	std::wstring wstr(size, 0);
-	MultiByteToWideChar(CP_ACP, 0, str, len, &wstr[0], size);
-#ifdef _UNICODE
-	return const_cast<LPTSTR>(wstr.c_str());
-#else
-	int size2 = WideCharToMultiByte(CP_OEMCP, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
-	std::string str2(size2, 0);
-	WideCharToMultiByte(CP_OEMCP, 0, wstr.c_str(), -1, &str2[0], size2, NULL, NULL);
-	return const_cast<LPTSTR>(str2.c_str());
-#endif
-}
-char* LPTSTRToChar(LPTSTR str)
-{
-	int len = _tcslen(str) + 1;
-	int size = WideCharToMultiByte(CP_ACP, 0, str, len, NULL, 0, NULL, NULL);
-	std::string mbstr(size, 0);
-	WideCharToMultiByte(CP_ACP, 0, str, len, &mbstr[0], size, NULL, NULL);
-	return const_cast<char*>(mbstr.c_str());
 }
 
 void Button::DisplayInfo() const
@@ -936,4 +928,84 @@ void ReDraw(const int& x1, const int& x2, const int& y1, const int& y2)
         if (tmpObj != nullptr)  tmpObj->_Draw();
     }
     return;
+}
+
+bool Point::write(ostream &os) const
+{
+    os << static_cast<int>(PointType::POINT) << "\t" << X << "\t" << Y << endl;
+    return true;
+}
+
+bool Point::read(istream &is)
+{
+    is >> X >> Y;
+    return true;
+}
+bool Line::write(ostream &os) const
+{
+    os << static_cast<int>(PointType::LINE) << "\t" << points.size() << "\t";
+    for (auto &pt : points)
+        os << pt.getX() << "\t" << pt.getY() << "\t";
+    os << endl;
+    return true;
+}
+bool Line::read(istream &is)
+{
+    size_t ncount;
+    is >> ncount;
+    for (int i = 0; i < ncount; ++i)
+    {
+        int x,y;
+        is >> x >> y;
+        if (i)    borders.push_back(Borden(points.back().getX(),points.back().getY(),x,y));
+        points.push_back(Point(x,y,fColor, PointType::LINE));
+        points.back().SetFather(id);
+    }
+    return true;
+}
+bool Polygen::write(ostream &os) const
+{
+    os << static_cast<int>(PointType::POLYGEN) << "\t" << points.size() << "\t";
+    for (auto &pt : points)
+        os << pt.getX() << "\t" << pt.getY() << "\t";
+    os << endl;
+    return true;
+}
+bool Polygen::read(istream &is)
+{
+    size_t ncount;
+    is >> ncount;
+    for (int i = 0; i < ncount; ++i)
+    {
+        int x, y;
+        is >> x >> y;
+        if (i)    borders.push_back(Borden(points.back().getX(), points.back().getY(), x, y));
+        points.push_back(Point(x, y, fColor, PointType::POLYGEN));
+        points.back().SetFather(id);
+    }
+    return true;
+}
+Response *Response::FindClone(istream &is)
+{
+    int type;
+    Response *pshp = nullptr;
+    is >> type;
+    switch (type)
+    {
+	case static_cast<int>(PointType::POINT):
+        pshp = new Point();
+        break;
+	case static_cast<int>(PointType::LINE):
+        pshp = new Line();
+        break;
+	case static_cast<int>(PointType::POLYGEN):
+        pshp = new Polygen();
+        break;
+    default:
+        pshp = nullptr;
+        break;
+    }
+    if (pshp)
+        is >> (*pshp);
+    return pshp;
 }

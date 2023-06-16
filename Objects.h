@@ -18,14 +18,11 @@ namespace ColorConst {
 	constexpr char _dy = 3;
 	constexpr char _BOLD_ = 3;
 	constexpr char _BOLDER_ = 1;
-	constexpr double ALPHA = 1.0;
 }
 using namespace ColorConst;
 constexpr bool DRAWING = false;
 constexpr bool EXISTED = true;
 constexpr char _SIZE_ = 5;
-static LPTSTR filename;
-
 
 class Commander ;
 class Display;
@@ -37,18 +34,19 @@ class Response
 protected:
 	int X, Y;
 	COLORREF color;
-	double alpha;
     bool drawed, focused, shownedInfo;
 	unsigned int id;
 	static unsigned int count;
+	virtual bool write(std::ostream&) { return true; };
+	virtual bool read(std::istream&) { return true; };
 public:
-	Response() :X(0), Y(0), color(WHITE), alpha(1) {
+	Response() :X(0), Y(0), color(WHITE){
 		id = ++count;
 		drawed = false;
 		focused = false;
 		shownedInfo = false;
 	}
-	Response(int x, int y, COLORREF Color, double Alpha) :X(x), Y(y), color(Color), alpha(Alpha) {
+	Response(int x, int y, COLORREF Color) :X(x), Y(y), color(Color) {
 		id=++count;
         drawed=false;
 		focused = false;
@@ -70,8 +68,18 @@ public:
 	bool getDraw() const { return drawed; }
 	bool getFocus() const { return focused; }
 	double getColor() const { return color; }
-	double getAlpha() const { return alpha; }
 	unsigned int getCount() const { return count; };
+	static Response* FindClone(std::istream&);
+	friend std::ostream& operator << (std::ostream& os,Response& Obj)
+	{
+		Obj.write(os);
+		return os;
+	}
+	friend std::istream& operator >> (std::istream& is,Response& Obj)
+	{
+		Obj.read(is);
+		return is;
+	}
 };
 class Display
 {
@@ -97,6 +105,8 @@ public:
 	virtual int _Delete()=0;
 	virtual int Move(const int&, const int&) { return 0; };
 	unsigned int getCount() const { return count; };
+	friend std::ostream &operator<<(std::ostream &, const Display &);
+	friend std::istream &operator>>(std::istream &, Display &);
 };
 
 class Text {
@@ -122,9 +132,12 @@ private:
 	Text info;
     PointType type;
     unsigned int father;
+protected:
+    virtual bool write(std::ostream &os) const ;
+    virtual bool read(std::istream &is) ;
 public:
     Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
-    Point(int X, int Y, COLORREF Color, double Alpha, PointType Type,int Size=_SIZE_) :Response(X, Y, Color, Alpha), type(Type),size(Size) {
+    Point(int X, int Y, COLORREF Color,  PointType Type,int Size=_SIZE_) :Response(X, Y, Color), type(Type),size(Size) {
 		father=id;
 		drawed = false;
 		focused = false;
@@ -185,6 +198,10 @@ private:
 	vector<Borden> borders;
 	double area;
 protected:
+    bool write(std::ostream &os) const;
+    bool read(std::istream &is);
+
+protected:
 	double CalcArea();
     int _AddPoint(const MOUSEMSG &);
     int _DeletePoint(vector<Point>::iterator,int);
@@ -194,9 +211,10 @@ protected:
     virtual int _Delete();
     virtual void DisplayInfo() const;
 	virtual int Move(const int&, const int&);
+
 public:
     Polygen() : Response(), points{}, borders{}, area(0) {}
-	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0) {
+	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color), points{}, borders{}, area(0) {
 		drawed = false;
 		focused = false;
 	}
@@ -232,9 +250,12 @@ protected:
     int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
+    virtual bool write(std::ostream &os) const;
+    virtual bool read(std::istream &is);
+
 public:
     Line() : Response(), points{}, borders{}, length(0) {}
-	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0) {
+	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color), points{}, borders{}, length(0) {
 		drawed = false;
 		focused = false;
 	}
@@ -267,7 +288,7 @@ protected:
 	void SaveToFile(ofstream&);
 	void LoadFromFile(ifstream&);
 public:
-	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color, ALPHA), width(w), height(h), btype{ b } {
+	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color), width(w), height(h), btype{ b } {
 		drawed = false;
 		focused = false;
 	};
@@ -287,8 +308,6 @@ public:
 
 Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
-LPTSTR CharToLPTSTR(const char*);
-char* LPTSTRToChar(LPTSTR str);
 void ReDraw(const int &, const int &, const int &, const int &);
 void Flush();
 #endif // !_OBJECTS_H_
