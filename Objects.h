@@ -36,7 +36,7 @@ protected:
 	int X, Y;
 	COLORREF color;
 	double alpha;
-    bool drawed, focused;
+    bool drawed, focused, shownedInfo;
 	unsigned int id;
 	static unsigned int count;
 public:
@@ -44,6 +44,7 @@ public:
 		id = ++count;
 		drawed = false;
 		focused = false;
+		shownedInfo = false;
 	}
 	Response(int x, int y, COLORREF Color, double Alpha) :X(x), Y(y), color(Color), alpha(Alpha) {
 		id=++count;
@@ -177,7 +178,6 @@ private:
 	vector<Point> points;
 	vector<Borden> borders;
 	double area;
-	bool shownedInfo;
 protected:
 	double CalcArea();
     int _AddPoint(const MOUSEMSG &);
@@ -189,8 +189,8 @@ protected:
     virtual void DisplayInfo() const;
 	virtual int Move(const int&, const int&);
 public:
-    Polygen() : Response(), points{}, borders{}, area(0), shownedInfo(false) {}
-	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0), shownedInfo(false) {
+    Polygen() : Response(), points{}, borders{}, area(0) {}
+	Polygen(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, area(0) {
 		drawed = false;
 		focused = false;
 	}

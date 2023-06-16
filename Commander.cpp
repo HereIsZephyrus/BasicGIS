@@ -107,6 +107,15 @@ Response* Commander::FocusObjID(const int x,const int y)
 		if (dynamic_cast<Point*>(*it) != nullptr)
 			if (Distance(x, y, (*it)->getX(), (*it)->getY()) < (dynamic_cast<Point*>(*it))->getSize())
 				return *it;
+		if (dynamic_cast<Polygen*>(*it) != nullptr)
+		{
+			Polygen* polygen = dynamic_cast<Polygen*>(*it);
+			if ((Polygen::CalcLine(x, y, polygen) & 1) != 0)
+				return polygen;
+			for (vector<Point>::iterator p = polygen->points.begin(); p != polygen->points.end(); ++p)
+				if (Distance(x, y, p->getX(), p->getY()) < p->getSize())
+					return &(*p);
+		}
 		if (dynamic_cast<Line*>(*it) != nullptr)
 		{
             Line *line = dynamic_cast<Line*>(*it);
@@ -116,15 +125,6 @@ Response* Commander::FocusObjID(const int x,const int y)
                 if (Distance(x, y, p->getX(), p->getY()) < p->getSize())
                     return &(*p);
 		}
-		if (dynamic_cast<Polygen*>(*it) != nullptr)
-		{
-            Polygen *polygen = dynamic_cast<Polygen*>(*it);
-            if ((Polygen::CalcLine(x, y, polygen) & 1) != 0)
-                return polygen;
-            for (vector<Point>::iterator p = polygen->points.begin(); p != polygen->points.end(); ++p)
-                if (Distance(x, y, p->getX(), p->getY()) < p->getSize())
-                    return &(*p);
-        }
 	}
 	return nullptr;
 }

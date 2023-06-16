@@ -123,6 +123,7 @@ int Point::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Point::Suspend()
 {
+	if (drawed == false)	return 0;
 	focused = true;
 	size= _SIZE_ +2;
 	setfillcolor(sColor);
@@ -179,8 +180,8 @@ int Borden::_Delete()
 }
 double Borden::CalcX(const int &y)
 {
-	double k=(termY-Y)/(termX-X);
-	return k*(y-Y)+X;
+    double k = (double)(termX - X)/(termY - Y);
+    return k*(y-Y)+X;
 }
 
 int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
@@ -198,7 +199,8 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
             // 如果鼠标在点上，把这个点删除
             if (Catch.uMsg == WM_RBUTTONDOWN && points.size() >= 2)
                 for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)
-                    if (sqrt((mouse.x - (*p).getX()) * (mouse.x - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
+                    if (sqrt((mouse.x - (*p).getX()) * (mouse.x
+ - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
                     {
 						_DeletePoint((*p).getID());
                         break;
@@ -219,6 +221,7 @@ int Polygen::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Polygen::Suspend()
 {
+	if (drawed == false)	return 0;
 	focused = true;
 	//填充一个多边形出来，透明度低一些
 	const size_t num = points.size();
@@ -356,12 +359,12 @@ int Polygen::_Delete()
     Flush();
 	return 0;
 }
-int Polygen::CalcLine(const int& x, const int& y, Polygen* obj)
+int Polygen::CalcLine(const int& x, const int& y, Polygen* poly)
 {
 	int calc = 0;
-	Polygen* poly = dynamic_cast<Polygen*>(obj);
 	for (vector<Borden>::iterator it = (poly->borders).begin(); it != (poly->borders).end(); ++it)
-		if ((*it).CalcX(y) <= x)   ++calc;
+		if (	(y - (*it).getY()) * (y - (*it).getTermY()) < 0 && ((*it).CalcX(y)<=x))
+			++calc;
 	return calc;
 }
 
@@ -427,6 +430,7 @@ int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
 }
 int Line::Suspend()
 {
+	if (drawed == false)	return 0;
 	focused = true;
     for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
     {
@@ -456,7 +460,7 @@ bool Line::CheckEdges(const int& x, const int& y, Line* obj)
 	for (vector<Borden>::iterator it = (line->borders).begin(); it != (line->borders).end(); ++it)
 	{
 		double getX = (*it).CalcX(y);
-		if (getX >= x - _dx && getX <= x + _dx)
+		if (getX >= x - _dx && getX <= x + _dx && (y - (*it).getY()) * (y - (*it).getTermY()) < 0)
 			return true;
 	}
 	return false;
