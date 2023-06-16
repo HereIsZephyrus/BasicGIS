@@ -123,7 +123,7 @@ public:
 		drawed = false;
 		focused = false;
 	}
-    ~Point() { _Delete(); }
+    //~Point() { _Delete(); }
     virtual int ClickLeft(bool, const MOUSEMSG &);
     virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
@@ -142,7 +142,7 @@ private:
 	int termX, termY, bold;
 public:
 	Borden(int sX,int sY,int tX,int tY,int Bold=_BOLD_):Display(sX,sY,BLACK),termX(tX),termY(tY),bold(Bold){}
-    ~Borden() { _Delete(); }
+    //~Borden() { _Delete(); }
     int getTermX() const { return termX; }
     int getTermY() const { return termY; }
     int getBold() const { return bold; }
@@ -285,4 +285,5 @@ Polygen* FindPolygen(int ID);
 LPTSTR CharToLPTSTR(const char*);
 char* LPTSTRToChar(LPTSTR str);
 void ReDraw(const int &, const int &, const int &, const int &);
+void Flush();
 #endif // !_OBJECTS_H_

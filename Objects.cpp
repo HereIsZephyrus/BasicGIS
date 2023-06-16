@@ -32,6 +32,7 @@ vector<Squareness*> elmList;
 vector<Button*> butList;
 unsigned int Response::count = 0;
 unsigned int Display::count = 0;
+IMAGE img;
 
 void Text::Print(COLORREF backColor)
 {
@@ -69,13 +70,13 @@ int Squareness::_Draw()
 int Squareness::_Delete()
 {
 	drawed = false;
-	clearrectangle(X,Y,X+width,Y+height);
-    ReDraw(X,X+width,Y,Y);
-    ReDraw(X, X + width, Y+height, Y+height);
-    ReDraw(X, X, Y, Y + height);
-    ReDraw(X + width, X + width, Y, Y + height);
+    Flush();
+	//clearrectangle(X,Y,X+width,Y+height);
+    //ReDraw(X,X+width,Y,Y);
+    //ReDraw(X, X + width, Y+height, Y+height);
+    //ReDraw(X, X, Y, Y + height);
+    //ReDraw(X + width, X + width, Y, Y + height);
     return 0;
-	//@@@@@@@@@@@@@@@HereIsZephyrus擦掉图像
 }
 
 int Point::ClickLeft(bool Status, const MOUSEMSG& mouse)
@@ -123,7 +124,7 @@ int Point::ClickRight(bool Status, const MOUSEMSG &mouse)
 int Point::Suspend()
 {
 	focused = true;
-	size= _SIZE_ *1.2;
+	size= _SIZE_ +2;
 	setfillcolor(sColor);
 	fillcircle(X, Y, size);
 	return 0;
@@ -131,12 +132,7 @@ int Point::Suspend()
 int Point::UnSuspend()
 {
 	focused = false;
-    clearcircle(X, Y, size); // 删除Suspend后更大的点
-    size = _SIZE_;
-	setlinecolor(fColor);
-	setlinestyle(PS_SOLID, _BOLDER_);
-    circle(X, Y, size);
-    setlinestyle(PS_NULL, _BOLDER_);
+    Flush();
     return 0;
 }
 int Point::_Draw()
@@ -155,11 +151,11 @@ int Point::_Delete()
 		return 1;
 	drawed = false;
 	color = 0;  size = _SIZE_;
-    clearcircle(X, Y, size);
-    ReDraw(X - size/2, X - size/2, Y - size/2, Y + size/2);
-    ReDraw(X - size/2, X + size/2, Y - size/2, Y - size/2);
-    ReDraw(X + size/2, X + size/2, Y - size/2, Y + size/2);
-    ReDraw(X - size/2, X + size/2, Y + size/2, Y + size/2);
+    Flush();
+    //ReDraw(X - size/2, X - size/2, Y - size/2, Y + size/2);
+    //ReDraw(X - size/2, X + size/2, Y - size/2, Y - size/2);
+    //ReDraw(X + size/2, X + size/2, Y - size/2, Y + size/2);
+    //ReDraw(X - size/2, X + size/2, Y + size/2, Y + size/2);
 	return 0;
 }
 
@@ -174,12 +170,11 @@ int Borden::_Draw()
 }
 int Borden::_Delete()
 {
-	if (!drawed)//failed
-		return 1;
 	drawed = false;
-    setrop2(R2_NOP);//用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-    line(X, Y, termX, termY);
-    setrop2(R2_COPYPEN);
+    Flush();
+    //setrop2(R2_NOP);//用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+    //line(X, Y, termX, termY);
+    //setrop2(R2_COPYPEN);
 	return 0;
 }
 double Borden::CalcX(const int &y)
@@ -200,15 +195,15 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 		_Draw();
 		MOUSEMSG Catch=GetMouseMsg();
 		while (Catch.uMsg!=WM_LBUTTONDOWN){
-			Catch= GetMouseMsg();
             // 如果鼠标在点上，把这个点删除
             if (Catch.uMsg == WM_RBUTTONDOWN && points.size() >= 2)
                 for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)
                     if (sqrt((mouse.x - (*p).getX()) * (mouse.x - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
                     {
-                        _DeletePoint(points.back().getID());
+						_DeletePoint((*p).getID());
                         break;
                     }
+			Catch = GetMouseMsg();
         }
 		tmpMsg = Catch;
 	}
@@ -243,23 +238,7 @@ int Polygen::Suspend()
 int Polygen::UnSuspend()
 {
 	focused = false;
-    //擦掉填充的多边形
-    const size_t num = points.size();
-    if (num < 3)    return 1; // failed
-    vector<POINT> pts;
-    for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
-    {
-        POINT pt;
-        pt.x = (*it).getX();
-        pt.y = (*it).getY();
-        pts.push_back(pt);
-    }
-
-    setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-    fillpolygon(&pts[0], static_cast<int>(num));
-    setrop2(R2_COPYPEN);
-    for (vector<Borden>::iterator it = borders.begin(); it != borders.end(); ++it)
-        ReDraw((*it).getX(), (*it).getTermX(), (*it).getY(), (*it).getTermY());
+    Flush();
     return 0;
 }
 double Polygen::CalcArea()
@@ -286,7 +265,7 @@ int Polygen::_AddPoint(const MOUSEMSG& mouse)
 	}
 	vector<Point>::iterator p = points.begin();
 	const int x1 = mouse.x, y1 = mouse.y, x2 = (*p).getX(), y2 = (*p).getY();
-	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= _SIZE_*1.3)
+	if (sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= _SIZE_+2)
 	{
 		_Bind(points.begin(), points.end() - 1);//手动封闭了
 		return 1;
@@ -322,6 +301,7 @@ int Polygen::_DeletePoint(const unsigned int& id)
 		b = &*(borders.end()-2);//一个矩形一定起码有三条边的！不会越界
 		_Erase(b);
 		points.erase(p);
+		Flush();
 		_Bind(points.begin(), points.end() - 1);
 		return 0;
 	}
@@ -335,6 +315,7 @@ int Polygen::_DeletePoint(const unsigned int& id)
 			_Erase(b-1);
 			_Bind(p-1, p+1);//这里不会越界，因为上面的if已经判断过了（挺妙的）
 			points.erase(p);
+			Flush();
 			break;
 		}
 	}
@@ -353,9 +334,9 @@ int Polygen::_Erase(Borden* b)
 		if (&*it == b)
 		{
 			borders.erase(it);
-            setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-            line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-            setrop2(R2_COPYPEN);
+            //setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+            //line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+            //setrop2(R2_COPYPEN);
             return 0;
 		}
 	return 0;
@@ -363,15 +344,16 @@ int Polygen::_Erase(Borden* b)
 int Polygen::_Draw()
 {
 	drawed = true;
-	for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)	(*p)._Draw();
+	for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)			(*p)._Draw();
 	for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	(*b)._Draw();
 	return 0;
 }
 int Polygen::_Delete()
 {
 	drawed = false;
-    for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)			(*p)._Delete();
-    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	(*b)._Delete();
+    for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)				(*p)._Delete();
+    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)	    (*b)._Delete();
+    Flush();
 	return 0;
 }
 int Polygen::CalcLine(const int& x, const int& y, Polygen* obj)
@@ -415,7 +397,7 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
                     if (sqrt((mouse.x - (*p).getX()) * (mouse.x - (*p).getX()) + (mouse.y - (*p).getY()) * (mouse.y - (*p).getY())) <= (*p).getSize())
                     {
                         Inpoint=true;
-                        _DeletePoint(points.back().getID());
+                        _DeletePoint((*p).getID());
                         break;
                     }
                 if (!Inpoint)
@@ -440,6 +422,7 @@ int Line::ClickRight(bool Status, const MOUSEMSG &mouse)
     if (Status == EXISTED && CastWarning("您确定要删除该线吗?") == true)
 		    return 0;
     _Delete();
+	Flush();
 	return 0;
 }
 int Line::Suspend()
@@ -457,24 +440,7 @@ int Line::Suspend()
 int Line::UnSuspend()
 {
 	focused = false;
-    //把高亮线擦掉
-    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
-    {
-        setlinecolor(fColor);
-        setlinestyle(PS_SOLID, _BOLD_ + 2);
-        setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-        line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-        setrop2(R2_COPYPEN);
-        setlinestyle(PS_NULL, _BOLDER_);
-    }
-    //重新绘制线
-    for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)
-    {
-        setlinecolor(fColor);
-        setlinestyle(PS_SOLID, _BOLD_ + 2);
-        line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-        setlinestyle(PS_NULL, _BOLDER_);
-    }
+    Flush();
     return 0;
 }
 double Line::CalcLength()
@@ -526,6 +492,7 @@ int Line::_DeletePoint(const unsigned int& id )
 	{
 		_Erase(b);
 		points.erase(p);
+		Flush();
 		return 0;
 	}
 	p = points.end() - 1;
@@ -534,6 +501,7 @@ int Line::_DeletePoint(const unsigned int& id )
 		b = &*(borders.end() - 1);
 		_Erase(b);
 		points.erase(p);
+		Flush();
 		return 0;
 	}
 	for (p = (points.begin() + 1), b = &*(borders.begin() + 1); p != (points.end()); ++p, ++b)
@@ -545,6 +513,7 @@ int Line::_DeletePoint(const unsigned int& id )
 			_Erase(b);
 			_Bind(p - 1, p + 1); // 这里不会越界，因为上面的if已经判断过了（挺妙的）
 			points.erase(p);
+			Flush();
 			break;
 		}
 	}
@@ -570,9 +539,9 @@ int Line::_Erase(Borden* b)
         if (&*it == b)
         {
             borders.erase(it);
-            setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-            line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-            setrop2(R2_COPYPEN);
+            //setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
+            //line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
+            //setrop2(R2_COPYPEN);
             return 0;
         }
     return 0;
@@ -582,6 +551,7 @@ int Line::_Delete()
 	drawed = false;
     for (vector<Point>::iterator p = points.begin(); p != points.end(); ++p)    (*p)._Delete();
     for (vector<Borden>::iterator b = borders.begin(); b != borders.end(); ++b)    (*b)._Delete();
+    Flush();
 	return 0;
 }
 
@@ -742,7 +712,6 @@ int Button::_Delete()
 }
 int Button::LoadPhoto(std::wstring& name)
 {
-	IMAGE	img;
 	bool failed = false;
 	int len = WideCharToMultiByte(CP_ACP, 0, name.c_str(), -1, NULL, 0, NULL, NULL);
 	char* str = new char[len];
@@ -927,6 +896,18 @@ void Line::DisplayInfo() const
     return;
 }
 
+void Flush()
+{
+    putimage(_WTool, 0, &img);
+    for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
+        if ((*it)->getDraw()==true)
+        {
+            (*it)->_Draw();
+            if ((*it)->getFocus()==true)
+                (*it)->Suspend();
+        }
+    return;
+}
 void ReDraw(const int& x1, const int& x2, const int& y1, const int& y2)
 {
 	extern Commander cmder;

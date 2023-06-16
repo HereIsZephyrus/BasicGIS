@@ -65,9 +65,9 @@ Button* Commander::DictateButton(const MOUSEMSG &mouse)
 	int x = mouse.x,y = mouse.y;
 	for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it) {
 		if ((x >= (*it)->getX() && x <= (*it)->getX() + (*it)->getWidth()) &&
-			(y >= (*it)->getY() && y <= (*it)->getY() + (*it)->getHeight()) &&
-			(*it)->getType()!=Finish)
-			return *it;
+			(y >= (*it)->getY() && y <= (*it)->getY() + (*it)->getHeight()))
+			if ((*it)->getDraw())
+				return *it;
 	}
 	return nullptr;
 }
@@ -149,7 +149,7 @@ int Commander::onMenuMsg(const MOUSEMSG& mouse)
 		return -1;
 	if (focusedObj->getFocus()==false)//意味着有可能有其他对象没有被unfocus
 		for (vector<Button*>::iterator it = butList.begin(); it != butList.end(); ++it)
-			if ((*it)->getFocus())  (*it)->UnSuspend();
+			if ((*it)->getDraw() && (*it)->getFocus())  (*it)->UnSuspend();
 	focusedObj->Suspend();
 	return focusedObj->Press(stage, mouse, obj, false);//Press返回1为Exit，不返回1则不退出
 }
