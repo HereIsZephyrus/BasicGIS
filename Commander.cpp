@@ -104,6 +104,7 @@ Response* Commander::FocusObjID(const int x,const int y)
 {
 	for (vector<Response*>::iterator it = objList.begin(); it != objList.end(); ++it)
 	{
+		if (!(*it)->getDraw())	continue;
 		if (dynamic_cast<Point*>(*it) != nullptr)
 			if (Distance(x, y, (*it)->getX(), (*it)->getY()) < (dynamic_cast<Point*>(*it))->getSize())
 				return *it;

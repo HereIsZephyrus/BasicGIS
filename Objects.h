@@ -29,6 +29,8 @@ static LPTSTR filename;
 
 class Commander ;
 class Display;
+class Polygen;
+class Line;
 class Response
 {
 	friend class Display;
@@ -50,6 +52,7 @@ public:
 		id=++count;
         drawed=false;
 		focused = false;
+		shownedInfo = false;
 	}
 	~Response() {
 		--count;
@@ -112,6 +115,8 @@ public:
 };
 class Point :public Response
 {
+//friend Line;
+//friend Polygen;
 private:
 	int size;
 	Text info;
@@ -147,6 +152,7 @@ public:
     int getTermX() const { return termX; }
     int getTermY() const { return termY; }
     int getBold() const { return bold; }
+	void SetDrawed(const bool status) { drawed = status; }
     inline double CalcX(const int&);
 	virtual void DisplayInfo() const;
 	virtual int _Draw();
@@ -181,7 +187,7 @@ private:
 protected:
 	double CalcArea();
     int _AddPoint(const MOUSEMSG &);
-    int _DeletePoint(const unsigned int &);
+    int _DeletePoint(vector<Point>::iterator,int);
     int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
     virtual int _Draw();
@@ -217,19 +223,18 @@ private:
 	vector<Point> points;
 	vector<Borden> borders;
 	double length;
-	bool shownedInfo;
 protected:
 	double CalcLength();
 	int _AddPoint(const MOUSEMSG&);
-	int _DeletePoint(const unsigned int&);
+	int _DeletePoint(vector<Point>::iterator,int);
     virtual int _Draw();
     virtual int _Delete();
     int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
 	virtual void DisplayInfo() const;
 public:
-    Line() : Response(), points{}, borders{}, length(0), shownedInfo(false) {}
-	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0), shownedInfo(false) {
+    Line() : Response(), points{}, borders{}, length(0) {}
+	Line(int X, int Y, COLORREF Color) :Response(X, Y, Color, ALPHA), points{}, borders{}, length(0) {
 		drawed = false;
 		focused = false;
 	}
