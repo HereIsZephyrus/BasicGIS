@@ -1,23 +1,4 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 22:10:24
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-15 23:15:39
- * @FilePath: \BasicGIS\GlobalVar.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 22:10:24
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-13 23:15:15
- * @FilePath: \BasicGIS\GlobalVar.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
+//@Description:存放窗口全局变量
 #pragma once
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
@@ -40,7 +21,6 @@ constexpr unsigned int _GButton = 15; // 按钮上下排列间隔
 constexpr unsigned int _WMSG = 50;
 constexpr unsigned int _Ellipse=5;
 constexpr unsigned int _FONT = 14;
-
 constexpr int ButtonNum = 10;
 constexpr COLORREF(eColor) = RGB(250, 250, 250);//橡皮擦颜色
 constexpr COLORREF(tColor) = RGB(0, 191, 255);//工具栏颜色
@@ -53,5 +33,4 @@ class Squareness;
 extern vector<Response *> objList;
 extern vector<Squareness *> elmList;
 extern vector<Button *> butList;
-
 #endif // !_GLOBAL_H_

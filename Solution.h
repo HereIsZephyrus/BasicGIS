@@ -1,32 +1,8 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 13:47:16
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-11 15:09:06
- * @FilePath: \GIS\Solution.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-08 13:51:29
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-09 11:02:18
- * @FilePath: \GIS\Solution.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
+//函数模块头文件
 #pragma once
-#include<graphics.h>
-#include<conio.h>
-
 #ifndef _SOLUTION_H_
 #define _SOLUTION_H_
 class Commander;
 void Initialize(Commander&);
 void ShutDown(Commander&);
-
 #endif // !_SOLUTION_H_
-

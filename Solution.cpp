@@ -1,23 +1,4 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 22:10:24
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-12 14:40:22
- * @FilePath: \BasicGIS\Solution.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-08 13:50:54
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-09 10:59:31
- * @FilePath: \GIS\Solution.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
+//@Description:流程主函数
 #pragma omp single
 #include "Solution.h"
 #include "Commander.h"

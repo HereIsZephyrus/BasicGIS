@@ -1,23 +1,4 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-07 20:53:55
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-09 10:18:38
- * @FilePath: \GIS\Commander.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-07 20:53:55
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-08 13:59:51
- * @FilePath: \GIS\Commander.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
+ // @Description:做控制器的实现，负责图形交互的操作
 #include "Commander.h"
 #include "Objects.h"
 #include "GlobalVar.h"

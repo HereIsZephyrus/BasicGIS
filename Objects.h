@@ -1,3 +1,4 @@
+//窗口对象的类定义
 #pragma once
 #ifndef _OBJECTS_H_
 #define _OBJECTS_H_
@@ -299,8 +300,6 @@ public:
 	const int getWidth() {		return width; }
 	const int getHeight() {	return height;}
 	ButtonType getType() { return btype; }
-    virtual int ClickLeft(bool, const MOUSEMSG &);
-    virtual int ClickRight(bool, const MOUSEMSG &);
     virtual int Suspend();
 	virtual int UnSuspend();
 	int Press(Status&,const MOUSEMSG&, Response*&,const bool);
@@ -311,6 +310,5 @@ public:
 
 Line* FindLine(int ID);
 Polygen* FindPolygen(int ID);
-void ReDraw(const int &, const int &, const int &, const int &);
 void Flush();
 #endif // !_OBJECTS_H_

@@ -1,23 +1,4 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 13:47:16
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-11 14:44:55
- * @FilePath: \GIS\Objects.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-07 20:53:55
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-07 21:25:06
- * @FilePath: \GIS\Objects.cpp
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
+//@Description:窗口对象类的实现
 #include "Objects.h"
 #include "GlobalVar.h"
 #include "Errors.h"
@@ -41,13 +22,11 @@ IMAGE img;
 
 void Text::Print(COLORREF backColor)
 {
-	//删除原有文字
 	setbkcolor(BLACK); // 将背景色设置为黑色
-	outtextxy(X, Y, L" "); // 在指定位置输出一个空格
+	outtextxy(X, Y, L" "); //删除原有文字
 	int len = MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, NULL, 0);
 	wchar_t* wstr = new wchar_t[len];
 	MultiByteToWideChar(CP_ACP, 0, contain.c_str(), -1, wstr, len);
-	//settextstyle(size);
 	setbkcolor(backColor);
 	settextcolor(BLACK);
 	outtextxy(X, Y, wstr);
@@ -76,11 +55,6 @@ int Squareness::_Delete()
 {
 	drawed = false;
     Flush();
-	//clearrectangle(X,Y,X+width,Y+height);
-    //ReDraw(X,X+width,Y,Y);
-    //ReDraw(X, X + width, Y+height, Y+height);
-    //ReDraw(X, X, Y, Y + height);
-    //ReDraw(X + width, X + width, Y, Y + height);
     return 0;
 }
 
@@ -174,10 +148,6 @@ int Point::_Delete()
 	drawed = false;
 	color = 0;  size = _SIZE_;
     Flush();
-    //ReDraw(X - size/2, X - size/2, Y - size/2, Y + size/2);
-    //ReDraw(X - size/2, X + size/2, Y - size/2, Y - size/2);
-    //ReDraw(X + size/2, X + size/2, Y - size/2, Y + size/2);
-    //ReDraw(X - size/2, X + size/2, Y + size/2, Y + size/2);
 	return 0;
 }
 
@@ -194,9 +164,6 @@ int Borden::_Delete()
 {
 	drawed = false;
     Flush();
-    //setrop2(R2_NOP);//用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-    //line(X, Y, termX, termY);
-    //setrop2(R2_COPYPEN);
 	return 0;
 }
 double Borden::CalcX(const int &y)
@@ -247,7 +214,6 @@ int Polygen::Suspend()
 {
 	if (drawed == false)	return 0;
 	focused = true;
-	//填充一个多边形出来，透明度低一些
 	const size_t num = points.size();
     if (num < 3)    return 1;//failed
     vector<POINT> pts;
@@ -258,7 +224,6 @@ int Polygen::Suspend()
         pts.push_back(pt);
     }
     setfillcolor(fColor);
-    //setalpha(128);                  // 设置透明度为 50%
     fillpolygon(&pts[0], static_cast<int>(num));
     return 0;
 }
@@ -360,9 +325,6 @@ int Polygen::_Erase(Borden* b)
 		{
 			(*it).SetDrawed(false);
 			borders.erase(it);
-            //setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-            //line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-            //setrop2(R2_COPYPEN);
             return 0;
 		}
 	return 0;
@@ -563,9 +525,6 @@ int Line::_Erase(Borden* b)
         {
 			(*it).SetDrawed(false);
             borders.erase(it);
-            //setrop2(R2_NOP); // 用背景色填充画笔，因为是静态图像所以像素覆盖可以实现擦除
-            //line(b->getX(), b->getY(), b->getTermX(), b->getTermY());
-            //setrop2(R2_COPYPEN);
             return 0;
         }
     return 0;
@@ -579,17 +538,6 @@ int Line::_Delete()
 	return 0;
 }
 
-int Button::ClickLeft(bool Status, const MOUSEMSG &mouse)
-{
-	//定义到Press中了，其实Button不该由Response派生过来，或者Response基类承载的接口溢出了，吸取教训。
-	return 0;
-}
-int Button::ClickRight(bool Status, const MOUSEMSG &mouse)
-{
-	//右键响应功能没有被定义！可以弹出个对话框给一个提示
-	//MessageBox()//user guide
-	return 0;
-}
 int Button::Suspend()
 {
 	focused = true;
@@ -626,13 +574,7 @@ int Button::Press(Status& stage, const MOUSEMSG& mouse, Response*& obj,bool Forc
 			InputBox(buffer, 100, L"请输入图片路径与名称");
 			std::wstring photoName = buffer;
 			if (LoadPhoto(photoName))
-			{
-				//fail to load
-				//memset(buffer, 0, sizeof(buffer));
 				CastError("请输入正确的文件路径和文件名！");
-				//InputBox(buffer, 100, L"请输入图片路径与名称");
-				//photoName = buffer;
-			}
 			break;
 		}
 		case New:
@@ -926,23 +868,6 @@ void Flush()
         }
     return;
 }
-void ReDraw(const int& x1, const int& x2, const int& y1, const int& y2)
-{
-	extern Commander cmder;
-    double k=(double)(y2-y1)/(x2-x1);
-    for (int i = x1; i <= x2; ++i){
-        int j=(int)(k*(i-x1)+y1);
-		Response* tmpObj = nullptr;
-		tmpObj=cmder.FocusObjID(i, j-1);
-        if (tmpObj!=nullptr)    tmpObj->_Draw();
-        tmpObj = cmder.FocusObjID(i, j);
-        if (tmpObj != nullptr)    tmpObj->_Draw();
-        tmpObj = cmder.FocusObjID(i, j+1);
-        if (tmpObj != nullptr)  tmpObj->_Draw();
-    }
-    return;
-}
-
 bool Point::write(ostream &os) const
 {
     os << static_cast<int>(PointType::POINT) << "\t" << X << "\t" << Y << endl;

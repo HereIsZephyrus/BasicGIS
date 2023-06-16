@@ -1,24 +1,4 @@
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 22:10:24
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-16 20:45:15
- * @FilePath: \BasicGIS\Commander.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-/***
- * @Author: ChanningTong Channing_TongCN@outlook.com
- * @Date: 2023-06-11 22:10:24
- * @LastEditors: ChanningTong Channing_TongCN@outlook.com
- * @LastEditTime: 2023-06-15 23:24:53
- * @FilePath: \BasicGIS\Commander.h
- * @Description:
- * @
- * @Copyright (c) 2023 by ChanningTong, All Rights Reserved.
- */
-
+// @控制器的类定义
 #pragma once
 #ifndef _COMMANDER_H_
 #define _COMMANDER_H_
@@ -30,7 +10,6 @@
 #include<conio.h>
 #include<vector>
 using std::vector;
-
 class Response;
 class Display;
 class Point;
@@ -63,7 +42,5 @@ public:
 	Response*& getObj(){ return obj; }
 	Response* FocusObjID(const int, const int);
 };
-
 inline double Distance(const int &, const int &, const int &, const int &);
-
 #endif // !_COMMANDER_H_
