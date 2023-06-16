@@ -26,6 +26,7 @@
 #include <windows.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 vector<Response*> objList;
 vector<Squareness*> elmList;
@@ -87,7 +88,7 @@ int Point::ClickLeft(bool Status, const MOUSEMSG& mouse)
 {
 	if (Status == EXISTED)
 	{
-		DisplayInfo();
+		//DisplayInfo(mouse);
 		return 0;
 	}
 	X = mouse.x; Y = mouse.y;
@@ -208,7 +209,7 @@ int Polygen::ClickLeft(bool Status, const MOUSEMSG &mouse)
 {
 	if (Status == EXISTED)
 	{
-		DisplayInfo();
+		//DisplayInfo(mouse);
 		return 0;
 	}
 	MOUSEMSG tmpMsg = mouse;
@@ -270,12 +271,13 @@ int Polygen::UnSuspend()
 double Polygen::CalcArea()
 {
     //利用三角形划分求多边形面积(有待调试，不保真)
-    double area=0;
+	area = 0;
     for (vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
     {
         area+=(*it).getX()*(*(it+1)).getY()-(*it).getY()*(*(it+1)).getX();
     }
-    return area/2;
+	area /= 2;
+    return area;
 }
 int Polygen::_AddPoint(const MOUSEMSG& mouse)
 {
@@ -393,7 +395,7 @@ int Line::ClickLeft(bool Status, const MOUSEMSG &mouse)
 {
 	if (Status == EXISTED)
 	{
-		DisplayInfo();
+		//DisplayInfo(mouse);
 		return 0;
 	}
 	MOUSEMSG tmpMsg = mouse;
@@ -472,10 +474,10 @@ int Line::UnSuspend()
 }
 double Line::CalcLength()
 {
-    double res=0;
+    length=0;
     for (vector<Point>::iterator it = points.begin()+1; it != points.end(); ++it)
-        res += sqrt(((*it).getX() - (*(it - 1)).getX()) * ((*it).getX() - (*(it - 1)).getX()) + ((*it).getY() - (*(it - 1)).getY()) * ((*it).getY() - (*(it - 1)).getY()));
-	return 0;
+        length += sqrt(((*it).getX() - (*(it - 1)).getX()) * ((*it).getX() - (*(it - 1)).getX()) + ((*it).getY() - (*(it - 1)).getY()) * ((*it).getY() - (*(it - 1)).getY()));
+	return length;
 }
 bool Line::CheckEdges(const int& x, const int& y, Line* obj)
 {
@@ -851,47 +853,62 @@ int Line::Move(const int& dx, const int& dy)
 	return 0;
 }
 
-void Button::DisplayInfo() const
+void Point::DisplayInfo(const MOUSEMSG& mouse)
 {
-    // 右键显示个guide信息
-    return;
-}
-void Borden::DisplayInfo() const
-{
-    return;
-}
-void Point::DisplayInfo() const
-{
-    const int n = 2;
-    Squareness Msg(X + _dx, Y + _dy, _WMSG, _FONT * n);
-    { // n
-        Msg.AddText(Text());
-        Msg.AddText(Text());
+    const int x=mouse.x,y=mouse.y;
+    if (showedInfo)
+    {
+        showedInfo=false;
+        Flush();
+        return;
     }
-    if (!drawed)
-        Msg._Draw();
-    else
-        Msg._Delete();
-    return;
-}
-void Polygen::DisplayInfo() const
-{
-    const int n = 2;
-    Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
+    showedInfo=true;
+    Squareness Msg(x + _dx, y + _dy,_WMSG, _FONT * (static_cast<int>(info.getLen()) + 10));
     { // n
-        Msg.AddText(Text());
-        Msg.AddText(Text());
+		std::stringstream IndexFlow;
+		IndexFlow << "X=" << X << "\tY=" << Y;
+        Msg.AddText(Text(Msg.getX()+_dx, Msg.getY()+_dy,IndexFlow.str(), _FONT, BLACK));
+        Msg.AddText(info);
     }
     Msg._Draw();
     return;
 }
-void Line::DisplayInfo() const
+void Polygen::DisplayInfo(const MOUSEMSG& mouse)
 {
-    const int n = 2;
-    Squareness Msg(X + _dx, Y + _dy, _WMSG, _SIZE_ * n);
-    { // n
-        Msg.AddText(Text());
-        Msg.AddText(Text());
+    const int x = mouse.x, y = mouse.y;
+    if (showedInfo)
+    {
+        showedInfo = false;
+        Flush();
+        return;
+    }
+    showedInfo = true;
+    Squareness Msg(x + _dx, y + _dy, _WMSG, _FONT * (static_cast<int>(info.getLen()) + 10));
+    {
+        std::stringstream IndexFlow;
+        IndexFlow << "Point:" << points.size() << "\t Area=" << CalcArea();
+        Msg.AddText(Text(Msg.getX() + _dx, Msg.getY() + _dy, IndexFlow.str(), _FONT, BLACK));
+        Msg.AddText(info);
+    }
+    Msg._Draw();
+    return;
+}
+void Line::DisplayInfo(const MOUSEMSG& mouse)
+{
+    const int x = mouse.x, y = mouse.y;
+    if (showedInfo)
+    {
+        showedInfo = false;
+        Flush();
+        return;
+    }
+    showedInfo = true;
+    Squareness Msg(x + _dx, y + _dy, _WMSG, _FONT * (static_cast<int>(info.getLen()) + 10));
+    {
+        std::stringstream IndexFlow;
+        IndexFlow << "Point:" << points.size() << "\t Area=" << CalcLength();
+        Msg.AddText(Text(Msg.getX() + _dx, Msg.getY() + _dy, IndexFlow.str(), _FONT, BLACK));
+        Msg.AddText(info);
     }
     Msg._Draw();
     return;

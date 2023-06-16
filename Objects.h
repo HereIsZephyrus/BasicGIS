@@ -28,15 +28,33 @@ class Commander ;
 class Display;
 class Polygen;
 class Line;
+
+class Text {
+protected:
+	int X, Y, size;
+	COLORREF color;
+	string contain;
+public:
+	Text() : X(1), Y(1), color(BLACK), size(10) {}
+	Text(int x, int y, string Contain, int font = 10, COLORREF colour = BLACK) :X(x), Y(y), contain(Contain), size(font), color(colour) {}
+	int getX() const { return X; }
+	int getY() const { return Y; }
+	COLORREF  getColor() const { return color; }
+	int getSize() const { return size; }
+	size_t getLen() const { return contain.size(); }
+	void Print(COLORREF);
+};
+
 class Response
 {
 	friend class Display;
 protected:
 	int X, Y;
 	COLORREF color;
-    bool drawed, focused, shownedInfo;
+    bool drawed, focused, showedInfo;
 	unsigned int id;
 	static unsigned int count;
+	Text info;
 	virtual bool write(std::ostream&) { return true; };
 	virtual bool read(std::istream&) { return true; };
 public:
@@ -44,13 +62,13 @@ public:
 		id = ++count;
 		drawed = false;
 		focused = false;
-		shownedInfo = false;
+		showedInfo = false;
 	}
 	Response(int x, int y, COLORREF Color) :X(x), Y(y), color(Color) {
 		id=++count;
         drawed=false;
 		focused = false;
-		shownedInfo = false;
+		showedInfo = false;
 	}
 	~Response() {
 		--count;
@@ -108,28 +126,12 @@ public:
 	friend std::ostream &operator<<(std::ostream &, const Display &);
 	friend std::istream &operator>>(std::istream &, Display &);
 };
-
-class Text {
-protected:
-	int X, Y,  size;
-	COLORREF color;
-	string contain;
-public:
-	Text(): X(1),Y(1),color(BLACK),size(10){}
-	Text(int x, int y, string Contain,int font=10, COLORREF colour=BLACK) :X(x), Y(y),contain(Contain), size(font),color(colour) {}
-	int getX() const { return X; }
-	int getY() const { return Y; }
-	COLORREF  getColor() const { return color; }
-	int getSize() const { return size; }
-	void Print(COLORREF);
-};
 class Point :public Response
 {
 //friend Line;
 //friend Polygen;
 private:
 	int size;
-	Text info;
     PointType type;
     unsigned int father;
 protected:
@@ -154,7 +156,7 @@ public:
     PointType getType() const {return PointType::MAX_OBJECT;}
     int getSize() const { return size; }
 	int getFather()const { return father; }
-	virtual void DisplayInfo() const;
+    virtual void DisplayInfo(const MOUSEMSG&);
 };
 class Borden :public Display
 {
@@ -168,7 +170,6 @@ public:
     int getBold() const { return bold; }
 	void SetDrawed(const bool status) { drawed = status; }
     inline double CalcX(const int&);
-	virtual void DisplayInfo() const;
 	virtual int _Draw();
 	virtual int _Delete();
 	virtual int Move(const int&, const int&);
@@ -212,8 +213,8 @@ protected:
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
     virtual int _Draw();
     virtual int _Delete();
-    virtual void DisplayInfo() const;
-	virtual int Move(const int&, const int&);
+    virtual void DisplayInfo(const MOUSEMSG &);
+    virtual int Move(const int&, const int&);
 
 public:
     Polygen() : Response(), points{}, borders{}, area(0) {}
@@ -252,7 +253,7 @@ protected:
     virtual int _Delete();
     int _Erase(Borden*);
     int _Bind(vector<Point>::iterator, vector<Point>::iterator);
-	virtual void DisplayInfo() const;
+    virtual void DisplayInfo(const MOUSEMSG &);
     virtual bool write(std::ostream &os) const;
     virtual bool read(std::istream &is);
 
@@ -305,8 +306,7 @@ public:
 	int Press(Status&,const MOUSEMSG&, Response*&,const bool);
 	virtual int _Draw();
     virtual int _Delete();
-    virtual void DisplayInfo() const;
-	void Setinfo(string);
+    void Setinfo(string);
 };
 
 Line* FindLine(int ID);
