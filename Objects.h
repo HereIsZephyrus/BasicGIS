@@ -89,7 +89,8 @@ public:
 	double getColor() const { return color; }
 	unsigned int getCount() const { return count; };
 	static Response* FindClone(std::istream&);
-	friend std::ostream& operator << (std::ostream& os,Response& Obj)
+	virtual void Setinfo(string) {};
+    friend std::ostream& operator << (std::ostream& os,Response& Obj)
 	{
 		Obj.write(os);
 		return os;
@@ -138,6 +139,7 @@ private:
 protected:
     virtual bool write(std::ostream &os) const ;
     virtual bool read(std::istream &is) ;
+	virtual void DisplayInfo(const MOUSEMSG&);
 public:
     Point() : Response(), type(PointType::POINT), size(_SIZE_) { father = id; }
     Point(int X, int Y, COLORREF Color,  PointType Type,int Size=_SIZE_) :Response(X, Y, Color), type(Type),size(Size) {
@@ -157,7 +159,6 @@ public:
     PointType getType() const {return PointType::MAX_OBJECT;}
     int getSize() const { return size; }
 	int getFather()const { return father; }
-    virtual void DisplayInfo(const MOUSEMSG&);
 };
 class Borden :public Display
 {
@@ -289,9 +290,9 @@ private:
 	Text info;
 	ButtonType btype;
 protected:
-	int LoadPhoto(wstring&);
-	void SaveToFile(ofstream&);
-	void LoadFromFile(ifstream&);
+	static int LoadPhoto(wstring&);
+	static void SaveToFile(ofstream&);
+	static void LoadFromFile(ifstream&);
 public:
 	Button(int X, int Y, COLORREF Color, int w, int h, ButtonType b) :Response(X, Y, Color), width(w), height(h), btype{ b } {
 		drawed = false;
@@ -305,7 +306,7 @@ public:
 	int Press(Status&,const MOUSEMSG&, Response*&,const bool);
 	virtual int _Draw();
     virtual int _Delete();
-    void Setinfo(string);
+	virtual void Setinfo(string);
 };
 
 Line* FindLine(int ID);
